@@ -1,0 +1,476 @@
+@import "tailwindcss";
+
+@theme inline {
+  --font-sans: var(--font-geist-sans);
+  --font-mono: var(--font-geist-mono);
+}
+
+@theme {
+  --color-navy-50: #f1f4fa;
+  --color-navy-100: #e1e7f3;
+  --color-navy-200: #c3cfe6;
+  --color-navy-600: #2c4372;
+  --color-navy-700: #213560;
+  --color-navy-800: #172749;
+  --color-navy-900: #101c36;
+  --color-navy-950: #0a1226;
+  /* Leaf: tuned to the logo greens. 500 ≥ 3:1 for UI borders/focus,
+     600 ≥ 4.5:1 for white button text, 700+ for green text. */
+  --color-leaf-50: #f4f8ec;
+  --color-leaf-100: #e6f0d3;
+  --color-leaf-200: #cde3a8;
+  --color-leaf-300: #b5d985;
+  --color-leaf-400: #88be4f;
+  --color-leaf-500: #62953a;
+  --color-leaf-600: #4f7d2b;
+  --color-leaf-700: #3f6623;
+  --color-leaf-800: #2a4a2a;
+  --color-leaf-900: #1b3518;
+  --color-leaf-950: #0d1e0d;
+
+  /* Logo greens (public/MockPrepLogo.svg) */
+  --color-brand-dark: #2a4a2a;
+  --color-brand-mid: #65943c;
+  --color-brand-light: #9fcc53;
+
+  --color-ink: #1c1b1b;
+  --color-body: #474747;
+  --color-cream: #fafafa;
+  --color-sand: #f5f5f5;
+  --color-stone: #ebebeb;
+  --color-forest: #2d7305;
+  --color-flame: #fc7c02;
+  --color-honey: #ffe6c7;
+  --color-sun: #ffb366;
+  --color-mint: #d5efc4;
+  --color-olive: #9a4a00;
+  --color-blush: #fdd9d3;
+  --color-brick: #8a1f14;
+  --color-royal: #01518b;
+  --color-royal-tint: #e7eff7;
+  --color-honey-soft: #fff1e3;
+  --color-forest-tint: #eaf6e1;
+  --font-display: var(--font-geist-sans), ui-sans-serif, system-ui, sans-serif;
+}
+
+:root {
+  --background: #f7f9fc;
+  --foreground: var(--color-navy-950);
+}
+
+html[data-contrast="high"] {
+  --background: #ffffff;
+  --color-slate-400: #334155;
+  --color-slate-500: #1e293b;
+  --color-slate-600: #0f172a;
+  --color-slate-200: #64748b;
+  --color-slate-100: #cbd5e1;
+}
+
+html[data-font="lg"] {
+  font-size: 112.5%;
+}
+
+html {
+  overflow-x: clip;
+  max-width: 100vw;
+  scroll-behavior: smooth;
+}
+
+body {
+  overflow-x: clip;
+  max-width: 100vw;
+  min-height: 100%;
+  background: var(--background);
+  color: var(--foreground);
+}
+
+:focus-visible {
+  outline: 3px solid var(--color-leaf-600);
+  outline-offset: 2px;
+}
+
+details>summary {
+  list-style: none;
+}
+
+details>summary::-webkit-details-marker {
+  display: none;
+}
+
+/* Admin top bar: while a page heading is shown there, hide the generic tagline and brand. */
+[data-admin]:has([data-page-heading]) [data-top-bar-fallback] {
+  display: none;
+}
+
+/* Admin rail: the active pill and marker glide between tabs with a springy settle. */
+@utility rail-pill {
+  transition: transform 0.55s cubic-bezier(0.34, 1.45, 0.64, 1);
+
+  @media (prefers-reduced-motion: reduce) {
+    transition: none;
+  }
+}
+
+@utility rail-marker {
+  animation: rail-marker 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) both;
+
+  @media (prefers-reduced-motion: reduce) {
+    animation: none;
+  }
+}
+
+@utility rail-icon-pop {
+  animation: rail-icon-pop 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) 0.08s both;
+
+  @media (prefers-reduced-motion: reduce) {
+    animation: none;
+  }
+}
+
+/* Secondary panel: the new tab's header and body slide in. */
+@utility panel-swap {
+  animation: panel-swap 0.4s cubic-bezier(0.16, 1, 0.3, 1) both;
+
+  @media (prefers-reduced-motion: reduce) {
+    animation: none;
+  }
+}
+
+/* ...and its items follow one after another. */
+@utility panel-stagger {
+  &>*>*,
+  & a {
+    animation: panel-item-in 0.45s cubic-bezier(0.16, 1, 0.3, 1) both;
+  }
+
+  &>*> :nth-child(2),
+  & a:nth-child(2) {
+    animation-delay: 35ms;
+  }
+
+  &>*> :nth-child(3),
+  & a:nth-child(3) {
+    animation-delay: 70ms;
+  }
+
+  &>*> :nth-child(4),
+  & a:nth-child(4) {
+    animation-delay: 105ms;
+  }
+
+  &>*> :nth-child(5),
+  & a:nth-child(5) {
+    animation-delay: 140ms;
+  }
+
+  &>*> :nth-child(6),
+  & a:nth-child(6) {
+    animation-delay: 175ms;
+  }
+}
+
+/* Brand logo.
+   Entrance, once on load (~1.3s): the hexagon turns 60deg into place (a
+   hexagon lands on itself), the answer sheets are dealt in one by one, the
+   tick stamps into its slot, and the MOCKPREP letters rise.
+   Idle, every 7s: the whole mark gives a small approving nod and the tick
+   pulses outward from its corner.
+   Pieces never move against each other after the entrance: the sheets and
+   hexagon have tick-shaped gaps cut into them, and relative motion would
+   expose those gaps. Growing the tick only ever covers them.
+   Parts are marked with data-logo-part; --i staggers siblings. */
+@utility logo-animated {
+  & [data-logo-part] {
+    transform-box: fill-box;
+    transform-origin: center;
+  }
+
+  & [data-logo-part="mark"] {
+    transform-origin: 50% 100%;
+    animation: logo-nod 7s ease-in-out 3s infinite;
+    transition:
+      rotate 0.45s cubic-bezier(0.34, 1.56, 0.64, 1),
+      scale 0.45s cubic-bezier(0.34, 1.56, 0.64, 1);
+  }
+
+  & [data-logo-part="hexagon"] {
+    animation: logo-hex-in 0.7s cubic-bezier(0.34, 1.3, 0.64, 1) both;
+  }
+
+  & [data-logo-part="sheet"] {
+    transform-origin: 50% 100%;
+    animation: logo-deal 0.55s cubic-bezier(0.2, 0.9, 0.3, 1.15) calc(0.2s + var(--i) * 0.12s) both;
+  }
+
+  /* Bottom corner of the tick, measured from the artwork. */
+  & [data-logo-part="check"] {
+    transform-origin: 35% 100%;
+    animation:
+      logo-stamp 0.4s cubic-bezier(0.34, 1.56, 0.64, 1) 0.75s both,
+      logo-tick-pulse 7s ease-in-out 3s infinite;
+    transition: scale 0.45s cubic-bezier(0.34, 1.56, 0.64, 1);
+  }
+
+  & [data-logo-part="letter"] {
+    animation: logo-letter-in 0.5s cubic-bezier(0.16, 1, 0.3, 1) calc(0.45s + var(--i) * 0.05s) both;
+  }
+
+  /* Hover and keyboard focus use the individual rotate/scale properties so
+     they combine with, rather than fight, the running animations. */
+  &:hover [data-logo-part="mark"],
+  &:focus-visible [data-logo-part="mark"] {
+    rotate: -6deg;
+    scale: 1.05;
+  }
+
+  &:hover [data-logo-part="check"],
+  &:focus-visible [data-logo-part="check"] {
+    scale: 1.1;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    & [data-logo-part] {
+      animation: none;
+      transition: none;
+    }
+  }
+}
+
+@keyframes logo-hex-in {
+  from {
+    opacity: 0;
+    transform: rotate(-60deg) scale(0.7);
+  }
+}
+
+@keyframes logo-deal {
+  from {
+    opacity: 0;
+    transform: translate(-25%, 20%) rotate(-25deg);
+  }
+}
+
+@keyframes logo-stamp {
+  from {
+    opacity: 0;
+    transform: scale(0.55);
+  }
+  50% {
+    opacity: 1;
+  }
+}
+
+/* The wordmark's SVG clips its letters, so they rise out of a mask. */
+@keyframes logo-letter-in {
+  from {
+    opacity: 0;
+    transform: translateY(100%);
+  }
+}
+
+@keyframes logo-nod {
+  0%,
+  16%,
+  100% {
+    transform: none;
+  }
+  5% {
+    transform: rotate(-7deg) translateY(-3%);
+  }
+  10% {
+    transform: rotate(2deg);
+  }
+}
+
+@keyframes logo-tick-pulse {
+  0%,
+  16%,
+  100% {
+    transform: none;
+  }
+  6% {
+    transform: scale(1.14);
+  }
+}
+
+@keyframes rail-marker {
+  from {
+    transform: scaleY(0.2);
+    opacity: 0;
+  }
+}
+
+@keyframes rail-icon-pop {
+  40% {
+    transform: scale(1.25) rotate(-8deg);
+  }
+
+  70% {
+    transform: scale(0.94) rotate(3deg);
+  }
+}
+
+@keyframes panel-swap {
+  from {
+    opacity: 0;
+    transform: translateX(-10px);
+    filter: blur(3px);
+  }
+}
+
+@keyframes panel-item-in {
+  from {
+    opacity: 0;
+    transform: translateX(-12px) scale(0.98);
+  }
+}
+
+.admin-spotlight-link {
+  background-image: none;
+  transition:
+    transform 220ms cubic-bezier(0.16, 1, 0.3, 1),
+    border-color 220ms ease,
+    box-shadow 220ms ease;
+}
+
+.admin-spotlight-link:hover {
+  transform: translateY(-2px);
+  background-image: radial-gradient(
+    240px circle at var(--spotlight-x, 50%) var(--spotlight-y, 50%),
+    rgba(45, 115, 5, 0.08),
+    transparent 76%
+  );
+  box-shadow: 0 10px 24px rgba(28, 27, 27, 0.08);
+}
+
+.admin-spotlight-link:focus-visible {
+  outline: 3px solid rgba(45, 115, 5, 0.35);
+  outline-offset: 3px;
+}
+
+.admin-spotlight-link:active {
+  transform: translateY(0) scale(0.99);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .admin-spotlight-link {
+    transition: none;
+  }
+  .admin-spotlight-link:hover,
+  .admin-spotlight-link:active {
+    transform: none;
+  }
+}
+
+/* ========================================================
+   Dynamic Admin Panel Theme Customization
+   Allows user to adjust button color, borders, radius, and canvas
+   ======================================================== */
+[data-admin] {
+  --admin-primary: #2d7305;
+  --admin-primary-hover: color-mix(in srgb, var(--admin-primary) 85%, black);
+  --admin-primary-tint: color-mix(in srgb, var(--admin-primary) 12%, white);
+  --admin-border-color: rgba(28, 27, 27, 0.08);
+  --admin-radius: 0.75rem;
+  --admin-canvas: #f5f5f5;
+  background-color: var(--admin-canvas);
+}
+
+[data-admin] .bg-forest {
+  background-color: var(--admin-primary) !important;
+}
+
+[data-admin] .text-forest {
+  color: var(--admin-primary) !important;
+}
+
+[data-admin] .border-forest,
+[data-admin] .border-forest\/20,
+[data-admin] .border-forest\/25,
+[data-admin] .border-forest\/30 {
+  border-color: var(--admin-primary) !important;
+}
+
+[data-admin] .bg-forest-tint,
+[data-admin] .bg-forest-tint\/40,
+[data-admin] .bg-forest-tint\/60,
+[data-admin] .bg-forest-tint\/80 {
+  background-color: var(--admin-primary-tint) !important;
+}
+
+[data-admin] .rail-pill {
+  background-color: var(--admin-primary) !important;
+}
+
+[data-admin] .rail-marker {
+  background-color: var(--admin-primary) !important;
+}
+
+[data-admin] .focus-visible\:outline-forest:focus-visible {
+  outline-color: var(--admin-primary) !important;
+}
+
+[data-admin] .border-black\/5,
+[data-admin] .border-black\/6,
+[data-admin] .border-black\/8,
+[data-admin] .border-black\/10 {
+  border-color: var(--admin-border-color) !important;
+}
+
+[data-admin] .rounded-xl,
+[data-admin] .rounded-2xl {
+  border-radius: var(--admin-radius);
+}
+
+/* Dialog and Skeleton animations */
+@keyframes dialog-card-in {
+  from {
+    opacity: 0;
+    transform: scale(0.96) translateY(6px);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}
+
+.dialog-card-in {
+  animation: dialog-card-in 0.2s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+.skeleton {
+  background: linear-gradient(90deg, #f0f0f0 25%, #e6e6e6 50%, #f0f0f0 75%);
+  background-size: 200% 100%;
+  animation: skeleton-loading 1.5s infinite;
+}
+
+@keyframes skeleton-loading {
+  0% {
+    background-position: 200% 0;
+  }
+  100% {
+    background-position: -200% 0;
+  }
+}
+
+@keyframes result-enter {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.result-enter {
+  animation: result-enter 500ms cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .result-enter {
+    animation: none;
+  }
+}

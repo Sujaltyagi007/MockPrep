@@ -1,0 +1,408 @@
+// MockPrep data model. Design notes live in docs/ARCHITECTURE.md.
+//
+// Localised content: short strings are stored as Json `LocalizedText`
+// ({ "en": "...", "hi": "..." }, English required). Questions are the
+// exception — each language version is reviewed on its own, so they get a
+// QuestionTranslation table.
+
+generator client {
+  provider = "prisma-client"
+  output   = "../lib/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+enum Lang {
+  en
+  hi
+}
+
+enum Qualification {
+  CLASS_10
+  CLASS_12
+  DIPLOMA
+  GRADUATE
+  BTECH
+  POSTGRADUATE
+}
+
+enum ExamCategory {
+  CIVIL
+  BANKING_SSC
+  RAILWAYS
+  DEFENCE
+  STATE_PSC
+  TECH
+  TEACHING
+}
+
+enum LifecycleStage {
+  DISCOVER
+  PREPARE
+  PRACTICE
+  APPLY
+  JOIN
+}
+
+enum PublishStatus {
+  DRAFT
+  IN_REVIEW
+  PUBLISHED
+  ARCHIVED
+}
+
+enum ApplicationStatus {
+  SAVED
+  APPLIED
+  ADMIT_CARD
+  APPEARED
+  RESULT
+  SELECTED
+  JOINED
+}
+
+enum Role {
+  STUDENT
+  EDITOR
+  ADMIN
+}
+
+// ─── Users ──────────────────────────────────────────────────────────────
+
+model User {
+  id            String         @id @default(uuid()) @db.Uuid
+  phone         String?        @unique // primary login (OTP) for most users
+  email         String?        @unique
+  name          String?
+  preferredLang Lang           @default(en)
+  qualification Qualification?
+  stateCode     String? // state PSC / domicile filters
+  birthDate     DateTime?      @db.Date // age-limit eligibility checks
+  role          Role           @default(STUDENT)
+  createdAt     DateTime       @default(now())
+
+  attempts     Attempt[]
+  goals        UserGoal[]
+  applications UserApplication[]
+  alerts       AlertSubscription?
+
+  @@map("users")
+}
+
+// ─── Exams: the career targets everything else hangs off ─────────────────
+
+model Exam {
+  id             String          @id @default(uuid()) @db.Uuid
+  slug           String          @unique
+  name           Json // LocalizedText
+  conductingBody String
+  category       ExamCategory
+  eligibleQuals  Qualification[]
+  officialUrl    String?
+  summary        Json? // LocalizedText
+
+  tests       Test[]
+  jobPostings JobPosting[]
+  roadmaps    Roadmap[]
+  books       ExamBook[]
+  goals       UserGoal[]
+
+  @@map("exams")
+}
+
+// ─── Question bank & mock tests ─────────────────────────────────────────
+
+model Question {
+  id          String        @id @default(uuid()) @db.Uuid
+  subject     String // "polity", "quant"
+  topic       String?
+  difficulty  Int?          @db.SmallInt // 1–5
+  answerIndex Int           @db.SmallInt
+  source      String? // "UPSC Prelims 2019", "original"
+  status      PublishStatus @default(DRAFT)
+  createdAt   DateTime      @default(now())
+
+  translations QuestionTranslation[]
+  tests        TestQuestion[]
+  answers      AttemptAnswer[]
+
+  @@index([subject, topic])
+  @@map("questions")
+}
+
+model QuestionTranslation {
+  questionId  String    @db.Uuid
+  lang        Lang
+  prompt      String
+  options     String[]
+  explanation String
+  reviewedAt  DateTime?
+
+  question Question @relation(fields: [questionId], references: [id], onDelete: Cascade)
+
+  @@id([questionId, lang])
+  @@map("question_translations")
+}
+
+model Test {
+  id              String        @id @default(uuid()) @db.Uuid
+  slug            String        @unique
+  examId          String?       @db.Uuid
+  title           String
+  summary         String
+  category        ExamCategory
+  durationMinutes Int           @db.SmallInt
+  marksCorrect    Float
+  marksWrong      Float         @default(0) // zero or negative
+  languages       Lang[]        @default([en])
+  featured        Boolean       @default(false)
+  status          PublishStatus @default(DRAFT)
+  publishedAt     DateTime?
+
+  exam      Exam?          @relation(fields: [examId], references: [id])
+  sections  TestSection[]
+  questions TestQuestion[]
+  attempts  Attempt[]
+  draft     TestDraft?
+
+  @@index([status, category])
+  @@map("tests")
+}
+
+/// Work in progress from the admin test builder. Holds the editor state as-is
+/// (imported questions may still lack answers); publishing validates it and
+/// writes the Test, TestSection and Question rows. See lib/import/draft.ts.
+model TestDraft {
+  id            String   @id @default(uuid()) @db.Uuid
+  testId        String?  @unique @db.Uuid // set when editing an already published test
+  title         String   @default("")
+  questionCount Int      @default(0) @db.SmallInt
+  data          Json // DraftData
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  test Test? @relation(fields: [testId], references: [id], onDelete: Cascade)
+
+  @@index([updatedAt(sort: Desc)])
+  @@map("test_drafts")
+}
+
+model TestSection {
+  id       String @id @default(uuid()) @db.Uuid
+  testId   String @db.Uuid
+  key      String // stable short id used by the UI, e.g. "polity"
+  position Int    @db.SmallInt
+  name     Json // LocalizedText
+
+  test      Test           @relation(fields: [testId], references: [id], onDelete: Cascade)
+  questions TestQuestion[]
+
+  @@unique([testId, position])
+  @@unique([testId, key])
+  @@map("test_sections")
+}
+
+model TestQuestion {
+  testId     String @db.Uuid
+  sectionId  String @db.Uuid
+  questionId String @db.Uuid
+  position   Int    @db.SmallInt
+
+  test     Test        @relation(fields: [testId], references: [id], onDelete: Cascade)
+  section  TestSection @relation(fields: [sectionId], references: [id], onDelete: Cascade)
+  question Question    @relation(fields: [questionId], references: [id])
+
+  @@id([testId, questionId])
+  @@unique([testId, position])
+  @@map("test_questions")
+}
+
+model Attempt {
+  id            String    @id @default(uuid()) @db.Uuid
+  userId        String?   @db.Uuid // null for guests
+  testId        String    @db.Uuid
+  lang          Lang      @default(en)
+  startedAt     DateTime  @default(now())
+  deadlineAt    DateTime // server-enforced, set from duration at start
+  submittedAt   DateTime?
+  score         Float?
+  correct       Int?      @db.SmallInt
+  wrong         Int?      @db.SmallInt
+  skipped       Int?      @db.SmallInt
+  sectionScores Json? // SectionResult[]
+
+  user    User?           @relation(fields: [userId], references: [id], onDelete: Cascade)
+  test    Test            @relation(fields: [testId], references: [id])
+  answers AttemptAnswer[]
+
+  @@index([userId, startedAt(sort: Desc)])
+  @@index([testId, score(sort: Desc)])
+  @@map("attempts")
+}
+
+model AttemptAnswer {
+  attemptId    String  @db.Uuid
+  questionId   String  @db.Uuid
+  chosenIndex  Int?    @db.SmallInt // null = visited but cleared
+  markedReview Boolean @default(false)
+  timeSpentMs  Int     @default(0)
+
+  attempt  Attempt  @relation(fields: [attemptId], references: [id], onDelete: Cascade)
+  question Question @relation(fields: [questionId], references: [id])
+
+  @@id([attemptId, questionId])
+  @@map("attempt_answers")
+}
+
+// ─── Job postings & step-by-step application guides ────────────────────
+
+model JobPosting {
+  id               String          @id @default(uuid()) @db.Uuid
+  slug             String          @unique
+  examId           String?         @db.Uuid
+  title            Json // LocalizedText
+  organization     String
+  eligibleQuals    Qualification[]
+  ageLimit         Json // LocalizedText, includes relaxation note
+  vacancies        Int?
+  applicationStart DateTime?       @db.Date
+  applicationEnd   DateTime?       @db.Date
+  officialUrl      String
+  notificationUrl  String? // official PDF for a specific cycle
+  status           PublishStatus   @default(DRAFT)
+  verifiedAt       DateTime? // an editor checked it against the notification
+  publishedAt      DateTime?
+
+  exam         Exam?              @relation(fields: [examId], references: [id])
+  steps        ApplicationStep[]
+  documents    RequiredDocument[]
+  applications UserApplication[]
+
+  @@index([status, applicationEnd])
+  @@map("job_postings")
+}
+
+model ApplicationStep {
+  id           String  @id @default(uuid()) @db.Uuid
+  jobPostingId String  @db.Uuid
+  position     Int     @db.SmallInt
+  body         Json // LocalizedText
+  linkUrl      String?
+
+  jobPosting JobPosting @relation(fields: [jobPostingId], references: [id], onDelete: Cascade)
+
+  @@unique([jobPostingId, position])
+  @@map("application_steps")
+}
+
+model RequiredDocument {
+  id           String @id @default(uuid()) @db.Uuid
+  jobPostingId String @db.Uuid
+  position     Int    @db.SmallInt
+  body         Json // LocalizedText
+
+  jobPosting JobPosting @relation(fields: [jobPostingId], references: [id], onDelete: Cascade)
+
+  @@unique([jobPostingId, position])
+  @@map("required_documents")
+}
+
+// ─── Roadmaps & books ───────────────────────────────────────────────────
+
+model Roadmap {
+  id         String @id @default(uuid()) @db.Uuid
+  examId     String @db.Uuid
+  title      Json // LocalizedText
+  totalWeeks Int?   @db.SmallInt
+
+  exam  Exam          @relation(fields: [examId], references: [id], onDelete: Cascade)
+  steps RoadmapStep[]
+
+  @@map("roadmaps")
+}
+
+model RoadmapStep {
+  id        String  @id @default(uuid()) @db.Uuid
+  roadmapId String  @db.Uuid
+  position  Int     @db.SmallInt
+  title     Json // LocalizedText
+  body      Json? // LocalizedText
+  weeks     Int?    @db.SmallInt
+  testSlug  String? // "practice this now" link
+
+  roadmap Roadmap    @relation(fields: [roadmapId], references: [id], onDelete: Cascade)
+  goals   UserGoal[]
+
+  @@unique([roadmapId, position])
+  @@map("roadmap_steps")
+}
+
+model Book {
+  id       String       @id @default(uuid()) @db.Uuid
+  title    String
+  author   String
+  useFor   String
+  category ExamCategory
+  isbn     String?      @unique
+
+  exams ExamBook[]
+
+  @@unique([title, author])
+  @@map("books")
+}
+
+model ExamBook {
+  examId   String @db.Uuid
+  bookId   String @db.Uuid
+  position Int    @db.SmallInt
+  note     Json? // LocalizedText, e.g. "Chapters 1–20 are enough for Prelims"
+
+  exam Exam @relation(fields: [examId], references: [id], onDelete: Cascade)
+  book Book @relation(fields: [bookId], references: [id], onDelete: Cascade)
+
+  @@id([examId, bookId])
+  @@map("exam_books")
+}
+
+// ─── Lifecycle tracker: Discover → Prepare → Practice → Apply → Join ───
+
+model UserGoal {
+  userId        String         @db.Uuid
+  examId        String         @db.Uuid
+  stage         LifecycleStage @default(DISCOVER)
+  roadmapStepId String?        @db.Uuid
+  updatedAt     DateTime       @updatedAt
+
+  user        User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+  exam        Exam         @relation(fields: [examId], references: [id], onDelete: Cascade)
+  roadmapStep RoadmapStep? @relation(fields: [roadmapStepId], references: [id])
+
+  @@id([userId, examId])
+  @@map("user_goals")
+}
+
+model UserApplication {
+  userId       String            @db.Uuid
+  jobPostingId String            @db.Uuid
+  status       ApplicationStatus @default(SAVED)
+  updatedAt    DateTime          @updatedAt
+
+  user       User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+  jobPosting JobPosting @relation(fields: [jobPostingId], references: [id], onDelete: Cascade)
+
+  @@id([userId, jobPostingId])
+  @@map("user_applications")
+}
+
+model AlertSubscription {
+  userId     String         @id @db.Uuid
+  categories ExamCategory[]
+  channels   String[]       @default(["web_push"]) // web_push, email, whatsapp, sms
+  createdAt  DateTime       @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("alert_subscriptions")
+}
