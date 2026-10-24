@@ -1,12 +1,5 @@
 import { MAX_PDF_BYTES, PdfReadError, pdfToText } from "@/lib/import/pdf-text";
 
-// PDF → plain text for the test builder. A Route Handler rather than a Server
-// Action because Server Action bodies are capped at 1MB and question papers
-// are often bigger. Parsing the text into questions happens in the browser so
-// the reviewer can re-run it instantly.
-//
-// TODO(auth): /admin has no sign-in yet; protect this with the same check once it does.
-
 export async function POST(request: Request) {
   const form = await request.formData().catch(() => null);
   const file = form?.get("file");

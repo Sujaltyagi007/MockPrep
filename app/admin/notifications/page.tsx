@@ -148,7 +148,7 @@ export default function NotificationsAdminPage() {
                     {n.urgent && <Badge tone="red">Urgent</Badge>}
                     {!n.read && <Badge tone="green">New</Badge>}
                   </div>
-                  <span className="text-[11px] text-body">
+                  <span className="text-xs text-body">
                     {formatDateTime(n.createdAt)}
                   </span>
                 </div>
@@ -158,7 +158,7 @@ export default function NotificationsAdminPage() {
               <button
                 type="button"
                 onClick={() => toggleRead(n.id)}
-                className="text-[11px] font-semibold text-body hover:text-forest transition shrink-0"
+                className="text-xs font-semibold text-body hover:text-forest transition shrink-0"
               >
                 {n.read ? "Mark unread" : "Dismiss"}
               </button>

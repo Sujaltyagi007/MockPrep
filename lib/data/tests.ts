@@ -3,20 +3,18 @@ import { prisma } from "@/lib/prisma";
 import { asLocalized } from "@/lib/i18n";
 import { cacheLife, cacheTag } from "next/cache";
 import type { LocalizedText, MockTest, TestSummary } from "@/lib/types";
-import type { QuestionTranslation } from "@/lib/generated/prisma/client";
+import type { Prisma, QuestionTranslation } from "@/lib/generated/prisma/client";
 
-export async function getFeaturedTests(): Promise<TestSummary[]> {
-  "use cache";
-  cacheTag("tests");
-  cacheLife("hours");
+const summaryInclude = {
+  _count: { select: { questions: true } },
+  exam: { select: { eligibleQuals: true, name: true } },
+  sections: { orderBy: { position: "asc" as const }, select: { name: true } },
+};
 
-  const tests = await prisma.test.findMany({
-    where: { status: "PUBLISHED", featured: true },
-    orderBy: { publishedAt: "asc" },
-    include: { _count: { select: { questions: true } }, exam: { select: { eligibleQuals: true } } },
-  });
+type TestWithSummary = Prisma.TestGetPayload<{ include: typeof summaryInclude }>;
 
-  return tests.map((t) => ({
+function toSummary(t: TestWithSummary): TestSummary {
+  return {
     id: t.slug,
     title: t.title,
     summary: t.summary,
@@ -27,7 +25,40 @@ export async function getFeaturedTests(): Promise<TestSummary[]> {
     negativeMarks: t.marksWrong,
     bilingual: t.languages.includes("hi"),
     eligibleQuals: t.exam?.eligibleQuals ?? null,
-  }));
+    kind: t.kind,
+    drillSubject: t.drillSubject,
+    difficulty: t.difficulty,
+    examName: t.exam ? asLocalized(t.exam.name).en : null,
+    sectionNames: t.sections.map((s) => asLocalized(s.name).en),
+    publishedAt: t.publishedAt?.toISOString() ?? null,
+  };
+}
+
+export async function getFeaturedTests(): Promise<TestSummary[]> {
+  "use cache";
+  cacheTag("tests");
+  cacheLife("hours");
+
+  const tests = await prisma.test.findMany({
+    where: { status: "PUBLISHED", featured: true },
+    orderBy: { publishedAt: "asc" },
+    include: summaryInclude,
+  });
+  return tests.map(toSummary);
+}
+
+/** Every published test, full mocks and drills, newest first. */
+export async function getPublishedTests(): Promise<TestSummary[]> {
+  "use cache";
+  cacheTag("tests");
+  cacheLife("hours");
+
+  const tests = await prisma.test.findMany({
+    where: { status: "PUBLISHED" },
+    orderBy: { publishedAt: "desc" },
+    include: summaryInclude,
+  });
+  return tests.map(toSummary);
 }
 
 export async function getPublishedTestSlugs(): Promise<string[]> {

@@ -176,10 +176,10 @@ export default function QuestionsAdminPage() {
             <div className="flex flex-wrap items-center justify-between gap-2 border-b border-black/5 pb-3">
               <div className="flex items-center gap-2">
                 <span className="font-mono text-xs font-bold text-forest">#{idx + 1}</span>
-                <span className="rounded-full bg-sand px-2.5 py-0.5 text-[11px] font-bold text-ink">
+                <span className="rounded-full bg-sand px-2.5 py-0.5 text-xs font-bold text-ink">
                   {q.topic}
                 </span>
-                <span className="rounded-full bg-forest-tint px-2 py-0.5 text-[10px] font-bold text-forest">
+                <span className="rounded-full bg-forest-tint px-2 py-0.5 text-xs font-bold text-forest">
                   {q.category}
                 </span>
               </div>
@@ -196,7 +196,7 @@ export default function QuestionsAdminPage() {
                 >
                   {q.difficulty}
                 </Badge>
-                <span className="text-[10px] font-semibold text-body">
+                <span className="text-xs font-semibold text-body">
                   EN / HI
                 </span>
               </div>
@@ -220,7 +220,7 @@ export default function QuestionsAdminPage() {
                     }`}
                   >
                     <span
-                      className={`grid size-5 place-items-center rounded-md font-bold text-[10px] ${
+                      className={`grid size-5 place-items-center rounded-md font-bold text-xs ${
                         isCorrect ? "bg-forest text-white" : "bg-black/5 text-ink/70"
                       }`}
                     >

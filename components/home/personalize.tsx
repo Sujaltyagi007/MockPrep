@@ -29,7 +29,7 @@ function FilterNotice({ qualification, filtering, hiddenCount, onToggle }: {
     <p className="flex flex-wrap items-center justify-center gap-x-2 text-sm text-slate-500">
       <span>
         {filtering ? "Only what fits" : "Everything, not just"}{" "}
-        <strong className="font-semibold text-navy-950">{qualificationLabels[qualification]}</strong>
+        <strong className="font-semibold text-ink">{qualificationLabels[qualification]}</strong>
       </span>
       <span aria-hidden>·</span>
       <button type="button" onClick={onToggle} className="min-h-11 font-semibold text-leaf-700 hover:underline">

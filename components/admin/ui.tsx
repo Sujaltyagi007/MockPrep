@@ -19,22 +19,11 @@ export { PageHeader } from "@/components/admin/page-header";
 
 export function Card({ className = "", ...props }: ComponentProps<"section">) {
   return (
-    <section
-      className={`rounded-2xl border border-black/5 bg-white shadow-[0_1px_3px_rgba(28,27,27,0.04)] ${className}`}
-      {...props}
-    />
+    <section className={`rounded-2xl border border-black/5 bg-white shadow-[0_1px_3px_rgba(28,27,27,0.04)] ${className}`} {...props} />
   );
 }
 
-export function CardHeader({
-  title,
-  description,
-  children,
-}: {
-  title: string;
-  description?: string;
-  children?: ReactNode;
-}) {
+export function CardHeader({ title, description, children }: { title: string; description?: string; children?: ReactNode; }) {
   return (
     <div className="flex flex-wrap items-start justify-between gap-x-4 gap-y-3 border-b border-black/5 px-4 py-4 sm:px-6">
       <div className="min-w-0">
@@ -54,21 +43,10 @@ const noticeStyles = {
   info: { box: "bg-honey-soft text-olive", Icon: Info },
 };
 
-export function Notice({
-  tone = "info",
-  className = "",
-  children,
-}: {
-  tone?: keyof typeof noticeStyles;
-  className?: string;
-  children: ReactNode;
-}) {
+export function Notice({ tone = "info", className = "", children }: { tone?: keyof typeof noticeStyles; className?: string; children: ReactNode; }) {
   const { box, Icon } = noticeStyles[tone];
   return (
-    <div
-      role={tone === "error" ? "alert" : "status"}
-      className={`flex gap-2.5 rounded-xl px-3.5 py-3 text-sm leading-5 font-medium ${box} ${className}`}
-    >
+    <div role={tone === "error" ? "alert" : "status"} className={`flex gap-2.5 rounded-xl px-3.5 py-3 text-sm leading-5 font-medium ${box} ${className}`} >
       <Icon className="mt-0.5 size-4 shrink-0" />
       <div className="min-w-0">{children}</div>
     </div>
@@ -82,17 +60,9 @@ const badgeStyles = {
   grey: "bg-stone text-body",
 };
 
-export function Badge({
-  tone = "grey",
-  children,
-}: {
-  tone?: keyof typeof badgeStyles;
-  children: ReactNode;
-}) {
+export function Badge({ tone = "grey", children }: { tone?: keyof typeof badgeStyles; children: ReactNode; }) {
   return (
-    <span
-      className={`inline-flex shrink-0 items-center rounded-full px-2.5 py-0.5 text-xs font-semibold whitespace-nowrap ${badgeStyles[tone]}`}
-    >
+    <span className={`inline-flex shrink-0 items-center rounded-full px-2.5 py-0.5 text-xs font-semibold whitespace-nowrap ${badgeStyles[tone]}`}>
       {children}
     </span>
   );

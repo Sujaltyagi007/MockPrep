@@ -2,7 +2,7 @@ import "server-only";
 import { prisma } from "@/lib/prisma";
 import { asLocalized } from "@/lib/i18n";
 import { cacheLife, cacheTag } from "next/cache";
-import type { Book, ExamMatch, JobGuide } from "@/lib/types";
+import type { Book, ExamListing, ExamMatch, JobGuide } from "@/lib/types";
 
 const firstPublishedTest = {
   where: { status: "PUBLISHED" as const },
@@ -76,5 +76,33 @@ export async function getBooks(): Promise<Book[]> {
     useFor: b.useFor,
     category: b.category,
     eligibleQuals: [...new Set(b.exams.flatMap((e) => e.exam.eligibleQuals))],
+  }));
+}
+
+/** Every exam with its free full mocks and whether a verified application guide exists. */
+export async function getExamDirectory(): Promise<ExamListing[]> {
+  "use cache";
+  cacheTag("exams", "tests", "jobs");
+  cacheLife("hours");
+
+  const exams = await prisma.exam.findMany({
+    orderBy: { slug: "asc" },
+    include: {
+      tests: { where: { status: "PUBLISHED", kind: "MOCK" }, orderBy: { publishedAt: "asc" }, select: { slug: true } },
+      jobPostings: { where: { status: "PUBLISHED", verifiedAt: { not: null } }, select: { id: true }, take: 1 },
+    },
+  });
+
+  return exams.map((e) => ({
+    slug: e.slug,
+    name: asLocalized(e.name),
+    summary: e.summary ? asLocalized(e.summary) : null,
+    conductingBody: e.conductingBody,
+    category: e.category,
+    eligibleQuals: e.eligibleQuals,
+    officialUrl: e.officialUrl,
+    practiceTestId: e.tests[0]?.slug ?? null,
+    mockCount: e.tests.length,
+    hasGuide: e.jobPostings.length > 0,
   }));
 }

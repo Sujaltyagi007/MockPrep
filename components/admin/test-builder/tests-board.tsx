@@ -69,7 +69,7 @@ export function TestsBoard({ tests, drafts }: { tests: AdminMockTest[]; drafts: 
           ["On home page", tests.filter((t) => t.featured).length, "text-ink"],
         ].map(([label, value, tone]) => (
           <div key={label} className="rounded-2xl border border-black/6 bg-white p-4 shadow-2xs">
-            <p className="text-[11px] font-bold uppercase tracking-wider text-body">{label}</p>
+            <p className="text-xs font-bold uppercase tracking-wider text-body">{label}</p>
             <p className={`mt-1 font-display text-2xl font-bold ${tone}`}>{value}</p>
           </div>
         ))}
@@ -88,7 +88,7 @@ export function TestsBoard({ tests, drafts }: { tests: AdminMockTest[]; drafts: 
           />
         </div>
         <div className="flex w-full items-center gap-2 sm:w-auto">
-          <select aria-label="Category" value={categoryFilter} onChange={(e) => setCategoryFilter(e.target.value)} className="flex-1 rounded-xl border border-black/10 bg-white px-3 py-2 text-xs font-semibold text-ink outline-none focus:border-forest sm:flex-none">
+          <select aria-label="Category" value={categoryFilter} onChange={(e) => setCategoryFilter(e.target.value)} className="min-w-0 flex-1 rounded-xl border border-black/10 bg-white px-3 py-2 text-xs font-semibold text-ink outline-none focus:border-forest sm:flex-none">
             <option value="ALL">All categories</option>
             {(Object.keys(categoryLabels) as ExamCategory[]).map((c) => (
               <option key={c} value={c}>
@@ -96,7 +96,7 @@ export function TestsBoard({ tests, drafts }: { tests: AdminMockTest[]; drafts: 
               </option>
             ))}
           </select>
-          <select aria-label="Status" value={statusFilter} onChange={(e) => setStatusFilter(e.target.value)} className="flex-1 rounded-xl border border-black/10 bg-white px-3 py-2 text-xs font-semibold text-ink outline-none focus:border-forest sm:flex-none">
+          <select aria-label="Status" value={statusFilter} onChange={(e) => setStatusFilter(e.target.value)} className="min-w-0 flex-1 rounded-xl border border-black/10 bg-white px-3 py-2 text-xs font-semibold text-ink outline-none focus:border-forest sm:flex-none">
             <option value="ALL">All status</option>
             <option value="PUBLISHED">Published</option>
             <option value="DRAFT">Draft</option>
@@ -109,7 +109,7 @@ export function TestsBoard({ tests, drafts }: { tests: AdminMockTest[]; drafts: 
           <div key={test.id} className="flex flex-col justify-between rounded-2xl border border-black/6 bg-white p-5 shadow-xs transition hover:border-forest/40">
             <div>
               <div className="flex items-start justify-between gap-2">
-                <span className="rounded-full bg-forest-tint px-2.5 py-0.5 text-[11px] font-bold text-forest">
+                <span className="rounded-full bg-forest-tint px-2.5 py-0.5 text-xs font-bold text-forest">
                   {categoryLabels[test.category as ExamCategory] ?? test.category}
                 </span>
                 <Badge tone={test.status === "PUBLISHED" ? "green" : "yellow"}>{test.status}</Badge>

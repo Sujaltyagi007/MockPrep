@@ -25,7 +25,7 @@ function TestScreen() {
   if (status === "finished") return <ResultsView />;
 
   return (
-    <div className="flex min-h-screen flex-col">
+    <div className="flex min-h-screen-dvh flex-col">
       <FocusMonitor />
       <TestHeader />
       <main className="mx-auto grid w-full max-w-6xl flex-1 gap-6 px-4 py-6 lg:grid-cols-[1fr_300px]">

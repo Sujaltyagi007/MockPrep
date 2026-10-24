@@ -1,36 +1,10 @@
 import Link from "next/link";
 import { Fragment } from "react";
 import type { Metadata } from "next";
-import {
-  ArrowRight,
-  ArrowUpRight,
-  BookOpenCheck,
-  Briefcase,
-  GraduationCap,
-  HelpCircle,
-  Plus,
-  Sparkles,
-  UsersRound,
-  Palette,
-  CheckCircle2,
-  Clock,
-  Award,
-} from "lucide-react";
-import {
-  Badge,
-  Card,
-  CardHeader,
-  EmptyState,
-  PageHeader,
-  buttonClass,
-  formatDateTime,
-} from "@/components/admin/ui";
 import { SpotlightLink } from "@/components/admin/spotlight-link";
-import {
-  getAdminStats,
-  getRecentAttempts,
-  DEFAULT_ADMIN,
-} from "@/lib/admin/admin-service";
+import { getAdminStats, getRecentAttempts, DEFAULT_ADMIN } from "@/lib/admin/admin-service";
+import { Badge, Card, CardHeader, EmptyState, PageHeader, buttonClass, formatDateTime } from "@/components/admin/ui";
+import { ArrowRight, ArrowUpRight, BookOpenCheck, Briefcase, GraduationCap, HelpCircle, Plus, Sparkles, UsersRound, Palette, Clock, Award } from "lucide-react";
 
 export const metadata: Metadata = {
   title: "Admin Dashboard - MockPrep",
@@ -123,9 +97,8 @@ export default async function DashboardPage() {
             >
               <ArrowUpRight className="absolute right-4 top-4 size-4 text-body/50 transition duration-200 group-hover:-translate-y-0.5 group-hover:translate-x-0.5 group-hover:text-forest sm:right-5 sm:top-5" />
               <span
-                className={`flex size-10 items-center justify-center rounded-xl ${
-                  tile.accent ? "bg-forest text-white" : "bg-forest-tint text-forest"
-                } transition-transform duration-200 group-hover:scale-105 group-hover:-rotate-3`}
+                className={`flex size-10 items-center justify-center rounded-xl ${tile.accent ? "bg-forest text-white" : "bg-forest-tint text-forest"
+                  } transition-transform duration-200 group-hover:scale-105 group-hover:-rotate-3`}
               >
                 <tile.Icon className="size-5" />
               </span>
@@ -133,7 +106,7 @@ export default async function DashboardPage() {
                 {tile.value}
               </p>
               <p className="text-xs font-semibold text-ink/80">{tile.label}</p>
-              <p className="text-[11px] text-body">{tile.hint}</p>
+              <p className="text-xs text-body">{tile.hint}</p>
             </SpotlightLink>
           </li>
         ))}
@@ -220,9 +193,8 @@ export default async function DashboardPage() {
                       <td className="py-3.5 px-3 font-mono font-bold text-ink whitespace-nowrap">
                         {attempt.score.toFixed(1)} / {attempt.maxMarks}
                         <span
-                          className={`ml-1.5 text-[11px] ${
-                            isPass ? "text-forest" : "text-brick"
-                          }`}
+                          className={`ml-1.5 text-xs ${isPass ? "text-forest" : "text-brick"
+                            }`}
                         >
                           ({percent}%)
                         </span>
@@ -268,7 +240,7 @@ export default async function DashboardPage() {
                 <span className="min-w-0">
                   <span className="flex items-center justify-between gap-1">
                     <span className="block font-semibold text-ink text-sm">{cat.name}</span>
-                    <span className="rounded-full bg-forest-tint px-2 py-0.5 text-[10px] font-bold text-forest">
+                    <span className="rounded-full bg-forest-tint px-2 py-0.5 text-xs font-bold text-forest">
                       {cat.testsCount} tests
                     </span>
                   </span>

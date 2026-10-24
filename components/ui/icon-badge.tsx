@@ -3,7 +3,7 @@ import type { LucideIcon } from "lucide-react";
 
 const tones = {
   green: "bg-leaf-100 text-leaf-700",
-  navy: "bg-navy-50 text-navy-800",
+  navy: "bg-leaf-50 text-leaf-800",
 } as const;
 
 export function IconBadge({ icon: Icon, tone = "green", className, }: { icon: LucideIcon; tone?: keyof typeof tones; className?: string; }) {

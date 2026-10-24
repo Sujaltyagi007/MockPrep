@@ -238,18 +238,17 @@ export function UserCustomizer({
                       key={style.id}
                       type="button"
                       onClick={() => handleSelectStyle(style.id)}
-                      className={`group flex flex-col items-center rounded-xl border p-2.5 text-center transition ${
-                        isSelected
-                          ? "border-forest bg-forest-tint/40 shadow-xs ring-1 ring-forest"
-                          : "border-black/8 bg-white hover:border-black/15 hover:bg-sand/30"
-                      }`}
+                      className={`group flex flex-col items-center rounded-xl border p-2.5 text-center transition ${isSelected
+                        ? "border-forest bg-forest-tint/40 shadow-xs ring-1 ring-forest"
+                        : "border-black/8 bg-white hover:border-black/15 hover:bg-sand/30"
+                        }`}
                     >
                       <img
                         src={previewUrl}
                         alt={style.label}
                         className="size-11 rounded-full object-cover shadow-2xs transition group-hover:scale-105"
                       />
-                      <span className="mt-2 font-display text-[11px] font-bold text-ink truncate w-full">
+                      <span className="mt-2 font-display text-xs font-bold text-ink truncate w-full">
                         {style.label.split(" ")[0]}
                       </span>
                     </button>
@@ -273,7 +272,7 @@ export function UserCustomizer({
                     title={preset.label}
                   >
                     <img src={preset.url} alt={preset.label} className="size-10 rounded-full object-cover" />
-                    <span className="mt-1 text-[10px] font-medium text-body truncate w-full text-center">
+                    <span className="mt-1 text-xs font-medium text-body truncate w-full text-center">
                       {preset.label.split(" ")[0]}
                     </span>
                   </button>
@@ -295,11 +294,10 @@ export function UserCustomizer({
                       key={grad.id}
                       type="button"
                       onClick={() => handleSelectInitialBg(grad.bgClass)}
-                      className={`flex items-center gap-2 rounded-xl border px-3 py-2 text-xs font-semibold transition ${
-                        isSelected
-                          ? "border-forest bg-forest-tint text-forest ring-1 ring-forest"
-                          : "border-black/10 bg-white text-ink hover:bg-sand"
-                      }`}
+                      className={`flex items-center gap-2 rounded-xl border px-3 py-2 text-xs font-semibold transition ${isSelected
+                        ? "border-forest bg-forest-tint text-forest ring-1 ring-forest"
+                        : "border-black/10 bg-white text-ink hover:bg-sand"
+                        }`}
                     >
                       <span className={`size-4 rounded-full ${grad.bgClass}`} />
                       <span>{grad.label}</span>
@@ -365,7 +363,7 @@ export function UserCustomizer({
 
               <div className="grid gap-4 sm:grid-cols-3">
                 <div className="rounded-xl border border-black/10 bg-white p-4 space-y-2.5 shadow-2xs">
-                  <span className="text-[10px] font-bold text-body uppercase tracking-wider">
+                  <span className="text-xs font-bold text-body uppercase tracking-wider">
                     Primary Action Button
                   </span>
                   <button
@@ -377,7 +375,7 @@ export function UserCustomizer({
                 </div>
 
                 <div className="rounded-xl border border-black/10 bg-white p-4 space-y-2.5 shadow-2xs">
-                  <span className="text-[10px] font-bold text-body uppercase tracking-wider">
+                  <span className="text-xs font-bold text-body uppercase tracking-wider">
                     Secondary Button
                   </span>
                   <button
@@ -389,7 +387,7 @@ export function UserCustomizer({
                 </div>
 
                 <div className="rounded-xl border border-black/10 bg-white p-4 space-y-2.5 shadow-2xs">
-                  <span className="text-[10px] font-bold text-body uppercase tracking-wider">
+                  <span className="text-xs font-bold text-body uppercase tracking-wider">
                     Badges & Active Pills
                   </span>
                   <div className="flex items-center gap-2">
@@ -415,11 +413,10 @@ export function UserCustomizer({
                       key={preset.name}
                       type="button"
                       onClick={() => handleApplyPresetTheme(preset)}
-                      className={`flex flex-col rounded-2xl border p-4 text-left transition ${
-                        isSelected
-                          ? "border-forest bg-forest-tint/30 shadow-xs ring-2 ring-forest"
-                          : "border-black/8 bg-white hover:border-black/15 hover:shadow-2xs"
-                      }`}
+                      className={`flex flex-col rounded-2xl border p-4 text-left transition ${isSelected
+                        ? "border-forest bg-forest-tint/30 shadow-xs ring-2 ring-forest"
+                        : "border-black/8 bg-white hover:border-black/15 hover:shadow-2xs"
+                        }`}
                     >
                       <div className="flex items-center justify-between">
                         <div className="flex items-center gap-2">
@@ -436,7 +433,7 @@ export function UserCustomizer({
                       </div>
 
                       <h5 className="mt-3 font-display text-xs font-bold text-ink">{preset.name}</h5>
-                      <div className="mt-2 flex items-center justify-between text-[11px] text-body">
+                      <div className="mt-2 flex items-center justify-between text-xs text-body">
                         <span>{preset.borderRadius} radius</span>
                         <code className="font-mono">{preset.primaryColor}</code>
                       </div>
@@ -498,14 +495,13 @@ export function UserCustomizer({
                       key={r.id}
                       type="button"
                       onClick={() => handleCustomBorderRadius(r.id)}
-                      className={`flex flex-col items-center rounded-xl border py-2 px-2 text-xs font-semibold transition ${
-                        currentTheme.borderRadius === r.id
-                          ? "border-forest bg-forest text-white shadow-xs"
-                          : "border-black/10 bg-white text-ink hover:bg-sand"
-                      }`}
+                      className={`flex flex-col items-center rounded-xl border py-2 px-2 text-xs font-semibold transition ${currentTheme.borderRadius === r.id
+                        ? "border-forest bg-forest text-white shadow-xs"
+                        : "border-black/10 bg-white text-ink hover:bg-sand"
+                        }`}
                     >
                       <span>{r.label}</span>
-                      <span className="text-[10px] opacity-75 font-normal">{r.radius}</span>
+                      <span className="text-xs opacity-75 font-normal">{r.radius}</span>
                     </button>
                   ))}
                 </div>
@@ -532,11 +528,10 @@ export function UserCustomizer({
                       key={b.label}
                       type="button"
                       onClick={() => handleCustomBorderOpacity(b.val)}
-                      className={`rounded-xl border py-2 px-2.5 text-center text-xs font-medium transition ${
-                        currentTheme.borderColor === b.val
-                          ? "border-forest bg-forest-tint text-forest font-bold ring-1 ring-forest"
-                          : "border-black/10 bg-white text-ink hover:bg-sand"
-                      }`}
+                      className={`rounded-xl border py-2 px-2.5 text-center text-xs font-medium transition ${currentTheme.borderColor === b.val
+                        ? "border-forest bg-forest-tint text-forest font-bold ring-1 ring-forest"
+                        : "border-black/10 bg-white text-ink hover:bg-sand"
+                        }`}
                     >
                       {b.label}
                     </button>
@@ -544,7 +539,6 @@ export function UserCustomizer({
                 </div>
               </div>
 
-              {/* Canvas Background Tone */}
               <div className="rounded-xl border border-black/8 bg-sand/20 p-4 space-y-3">
                 <h4 className="font-display text-sm font-bold text-ink">Canvas Background Tone</h4>
                 <p className="text-xs text-body leading-relaxed">
@@ -558,16 +552,9 @@ export function UserCustomizer({
                     { id: "mist", label: "Cool Slate", bg: "#f1f5f9" },
                     { id: "white", label: "Pure White", bg: "#ffffff" },
                   ].map((c) => (
-                    <button
-                      key={c.id}
-                      type="button"
-                      onClick={() => handleCustomCanvas(c.bg)}
-                      className={`flex items-center justify-between rounded-xl border py-2 px-3 text-xs font-semibold transition ${
-                        currentTheme.canvasTone === c.bg
-                          ? "border-forest bg-white text-ink ring-1 ring-forest shadow-2xs"
-                          : "border-black/10 bg-white text-ink hover:bg-sand"
-                      }`}
-                    >
+                    <button key={c.id} type="button" onClick={() => handleCustomCanvas(c.bg)} className={`flex items-center justify-between rounded-xl border py-2 px-3 text-xs font-semibold transition
+                       ${currentTheme.canvasTone === c.bg ? "border-forest bg-white text-ink ring-1 ring-forest shadow-2xs" : "border-black/10 bg-white text-ink hover:bg-sand"
+                      }`} >
                       <span>{c.label}</span>
                       <span className="size-3.5 rounded-full border border-black/15" style={{ backgroundColor: c.bg }} />
                     </button>
@@ -577,10 +564,6 @@ export function UserCustomizer({
             </div>
           </div>
         )}
-
-        {/* ========================================================= */}
-        {/* TAB 3: ADMIN SCRATCHPAD & PERSONAL NOTES */}
-        {/* ========================================================= */}
         {activeTab === "scratchpad" && (
           <div className="space-y-4">
             <div className="flex flex-wrap items-center justify-between gap-2">
@@ -596,34 +579,23 @@ export function UserCustomizer({
                     <CheckCircle className="size-3" /> Auto-saved
                   </span>
                 )}
-                <button
-                  type="button"
-                  onClick={() => handleNoteChange("")}
-                  className="rounded-lg border border-black/10 bg-white px-2.5 py-1 text-xs text-body hover:bg-sand"
-                >
+                <button type="button" onClick={() => handleNoteChange("")} className="rounded-lg border border-black/10 bg-white px-2.5 py-1 text-xs text-body hover:bg-sand">
                   Clear Notes
                 </button>
               </div>
             </div>
 
-            <textarea
-              rows={12}
-              value={localNote}
-              onChange={(e) => handleNoteChange(e.target.value)}
+            <textarea rows={12} value={localNote} onChange={(e) => handleNoteChange(e.target.value)}
               placeholder="Type your notes here... (e.g. UPSC Prelims cut-off trends, upcoming SSC CGL test additions, Hindi translation review notes)"
-              className="w-full rounded-2xl border border-black/10 bg-sand/20 p-4 font-mono text-xs sm:text-sm text-ink outline-none transition focus:border-forest focus:bg-white focus:ring-2 focus:ring-forest/20 leading-relaxed"
-            />
+              className="w-full rounded-2xl border border-black/10 bg-sand/20 p-4 font-mono text-xs sm:text-sm text-ink outline-none transition focus:border-forest focus:bg-white focus:ring-2 focus:ring-forest/20 leading-relaxed" />
 
             <div className="flex items-center justify-between text-xs text-body">
               <span>{localNote.trim().split(/\s+/).filter(Boolean).length} words &bull; {localNote.length} characters</span>
-              <span className="text-[11px] text-body/80">Stored locally in your secure admin session</span>
+              <span className="text-xs text-body/80">Stored locally in your secure admin session</span>
             </div>
           </div>
         )}
 
-        {/* ========================================================= */}
-        {/* TAB 4: MOCKPREP ENGINE CONFIGURATION */}
-        {/* ========================================================= */}
         {activeTab === "platform" && (
           <form onSubmit={handleSaveEngineSettings} className="space-y-6">
             <div>
@@ -651,7 +623,7 @@ export function UserCustomizer({
                   onChange={(e) => setPassingThreshold(e.target.value)}
                   className="w-full rounded-xl border border-black/10 bg-white px-3.5 py-2 text-xs text-ink outline-none focus:border-forest focus:ring-1 focus:ring-forest"
                 />
-                <p className="text-[11px] text-body">Score percentage required to display a passing badge.</p>
+                <p className="text-xs text-body">Score percentage required to display a passing badge.</p>
               </div>
 
               <div className="space-y-1.5">
@@ -665,7 +637,7 @@ export function UserCustomizer({
                   <option value="quarter">1/4th deduction (Banking pattern)</option>
                   <option value="none">Zero negative marks (Special diagnostic tests)</option>
                 </select>
-                <p className="text-[11px] text-body">Default penalty applied per incorrect question.</p>
+                <p className="text-xs text-body">Default penalty applied per incorrect question.</p>
               </div>
 
               <div className="space-y-1.5">
@@ -678,7 +650,7 @@ export function UserCustomizer({
                   <option value="en">English (Primary)</option>
                   <option value="hi">Hindi (हिन्दी)</option>
                 </select>
-                <p className="text-[11px] text-body">Language presented when candidate first launches test.</p>
+                <p className="text-xs text-body">Language presented when candidate first launches test.</p>
               </div>
 
               <div className="space-y-1.5">
@@ -691,7 +663,7 @@ export function UserCustomizer({
                   <option value="strict">Strict (Auto-submit when timer reaches 00:00)</option>
                   <option value="lenient">Lenient with warning banner</option>
                 </select>
-                <p className="text-[11px] text-body">Candidate experience during timed mock sessions.</p>
+                <p className="text-xs text-body">Candidate experience during timed mock sessions.</p>
               </div>
             </div>
 

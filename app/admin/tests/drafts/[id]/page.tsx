@@ -16,7 +16,7 @@ export default function DraftPage(props: { params: Promise<{ id: string }> }) {
 }
 
 async function DraftLoader({ params }: { params: Promise<{ id: string }> }) {
-  await connection(); // always the latest save
+  await connection();
   const { id } = await params;
   const [draft, exams] = await Promise.all([getDraft(id), getExamOptions()]);
   if (!draft) notFound();

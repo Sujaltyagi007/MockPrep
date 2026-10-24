@@ -1,6 +1,6 @@
 "use client";
 import { createPortal } from "react-dom";
-import { useEffect, useRef, useSyncExternalStore, type ReactNode } from "react";
+import { Fragment, useEffect, useRef, useSyncExternalStore, type ReactNode } from "react";
 import { AlertTriangle, LoaderCircle, Save, Trash2, X, type LucideIcon } from "lucide-react";
 
 export type ConfirmDialogProps = {
@@ -62,39 +62,18 @@ export function ConfirmDialog({ isOpen, onClose, onConfirm, title, description, 
   const ButtonIcon = icon ?? (isDanger ? Trash2 : Save);
 
   return createPortal(
-    <div
-      role="dialog"
-      aria-modal="true"
-      aria-labelledby="confirm-dialog-title"
-      className="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6"
-    >
-      <div
-        className="fixed inset-0 bg-ink/40 backdrop-blur-xs transition-opacity"
-        onClick={() => !pending && onClose()}
-        aria-hidden="true"
-      />
+    <div role="dialog" aria-modal="true" aria-labelledby="confirm-dialog-title" className="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6">
+      <div className="fixed inset-0 bg-ink/40 backdrop-blur-xs transition-opacity" onClick={() => !pending && onClose()} aria-hidden="true" />
       <div className="dialog-card-in relative w-full max-w-md overflow-hidden rounded-2xl border border-black/10 bg-white p-5 shadow-2xl transition-all">
-        <button
-          type="button"
-          onClick={onClose}
-          disabled={pending}
-          aria-label="Close dialog"
-          className="absolute top-3.5 right-3.5 flex size-7 items-center justify-center rounded-lg text-ink/40 transition hover:bg-sand hover:text-ink disabled:opacity-40"
-        >
+        <button type="button" onClick={onClose} disabled={pending} aria-label="Close dialog" className="absolute top-3.5 right-3.5 flex size-7 items-center justify-center rounded-lg text-ink/40 transition hover:bg-sand hover:text-ink disabled:opacity-40">
           <X className="size-4" />
         </button>
 
         <div className="flex items-center gap-3 pr-6">
-          <div
-            className={`flex size-9 shrink-0 items-center justify-center rounded-xl ${isDanger ? "bg-blush/70 text-brick" : "bg-forest-tint text-forest"
-              }`}
-          >
+          <div className={`flex size-9 shrink-0 items-center justify-center rounded-xl ${isDanger ? "bg-blush/70 text-brick" : "bg-forest-tint text-forest"}`}>
             <Icon className="size-4.5 stroke-[2.2]" />
           </div>
-          <h2
-            id="confirm-dialog-title"
-            className="font-display text-base font-semibold text-ink sm:text-[17px] leading-snug"
-          >
+          <h2 id="confirm-dialog-title" className="font-display text-base font-semibold text-ink sm:text-[17px] leading-snug">
             {dialogTitle}
           </h2>
         </div>
@@ -110,32 +89,20 @@ export function ConfirmDialog({ isOpen, onClose, onConfirm, title, description, 
         </div>
 
         <div className="mt-5 flex items-center justify-end gap-2 border-t border-black/5 pt-3">
-          <button
-            ref={cancelRef}
-            type="button"
-            disabled={pending}
-            onClick={onClose}
-            className="h-9 cursor-pointer rounded-xl border border-black/10 bg-white px-3.5 text-xs font-semibold text-ink transition hover:bg-sand active:scale-[.98] disabled:opacity-50"
-          >
+          <button ref={cancelRef} type="button" disabled={pending} onClick={onClose} className="h-9 cursor-pointer rounded-xl border border-black/10 bg-white px-3.5 text-xs font-semibold text-ink transition hover:bg-sand active:scale-[.98] disabled:opacity-50">
             {cancelLabel}
           </button>
-          <button
-            type="button"
-            disabled={pending}
-            onClick={onConfirm}
-            className={`inline-flex h-9 cursor-pointer shrink-0 items-center justify-center gap-1.5 rounded-xl px-4 text-xs font-semibold text-white shadow-xs transition hover:brightness-110 active:scale-[.98] disabled:opacity-50 ${isDanger ? "bg-brick" : "bg-forest"
-              }`}
-          >
+          <button type="button" disabled={pending} onClick={onConfirm} className={`inline-flex h-9 cursor-pointer shrink-0 items-center justify-center gap-1.5 rounded-xl px-4 text-xs font-semibold text-white shadow-xs transition hover:brightness-110 active:scale-[.98] disabled:opacity-50 ${isDanger ? "bg-brick" : "bg-forest"}`}>
             {pending ? (
-              <>
+              <Fragment>
                 <LoaderCircle className="size-3.5 animate-spin" />
                 <span>{pendingLabel ?? "Processing..."}</span>
-              </>
+              </Fragment>
             ) : (
-              <>
+              <Fragment>
                 <ButtonIcon className="size-3.5" />
                 <span>{dialogConfirmLabel}</span>
-              </>
+              </Fragment>
             )}
           </button>
         </div>

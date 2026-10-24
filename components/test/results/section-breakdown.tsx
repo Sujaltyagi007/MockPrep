@@ -10,7 +10,7 @@ export function SectionBreakdown({ test, result }: { test: MockTest; result: Tes
 
   return (
     <section aria-labelledby="sections-title" className="result-enter mt-6 rounded-2xl border border-slate-200 bg-white p-6 [animation-delay:100ms]">
-      <h2 id="sections-title" className="font-semibold text-navy-950">Section-wise breakdown</h2>
+      <h2 id="sections-title" className="font-semibold text-ink">Section-wise breakdown</h2>
       <p className="mt-1 text-sm text-slate-600">See what went well and where to focus next.</p>
       <ul className="mt-4 space-y-4">
         {result.sections.map((s) => {
@@ -19,7 +19,7 @@ export function SectionBreakdown({ test, result }: { test: MockTest; result: Tes
           return (
             <li key={s.sectionId}>
               <div className="flex flex-wrap items-baseline justify-between gap-x-3 text-sm">
-                <span className="font-medium text-navy-950">{section ? t(section.name, lang) : s.sectionId}</span>
+                <span className="font-medium text-ink">{section ? t(section.name, lang) : s.sectionId}</span>
                 <span className="text-slate-600">
                   {s.score} / {s.maxScore} ({Math.round(share * 100)}%) · {s.correct} correct, {s.wrong} wrong, {s.skipped} skipped
                 </span>

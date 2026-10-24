@@ -31,7 +31,7 @@ export function AnswerReview({ test, answers }: { test: MockTest; answers: Answe
     <section aria-labelledby="review-title" className="result-enter mt-6 [animation-delay:180ms]">
       <div className="flex flex-wrap items-center justify-between gap-3">
         <div>
-          <h2 id="review-title" className="font-semibold text-navy-950">Review answers</h2>
+          <h2 id="review-title" className="font-semibold text-ink">Review answers</h2>
           <p className="mt-1 text-sm text-slate-600">Check the correct answer and explanation for each question.</p>
         </div>
         <div className="flex gap-2" role="group" aria-label="Filter questions">
@@ -49,7 +49,7 @@ export function AnswerReview({ test, answers }: { test: MockTest; answers: Answe
         )}
         {reviewed.map(({ q, n, chosen }) => (
           <li key={q.id} className="rounded-2xl border border-slate-200 bg-white p-5">
-            <p className="font-medium text-navy-950">
+            <p className="font-medium text-ink">
               <span className="text-slate-500">Q{n}.</span> {t(q.prompt, lang)}
             </p>
             <ul className="mt-3 space-y-1.5 text-sm">
@@ -78,7 +78,7 @@ export function AnswerReview({ test, answers }: { test: MockTest; answers: Answe
             </ul>
             {chosen === undefined && <p className="mt-2 text-xs font-semibold text-slate-500">Not attempted</p>}
             <p className="mt-3 rounded-lg bg-slate-50 p-3 text-sm text-slate-700">
-              <span className="font-semibold text-navy-900">Why:</span> {t(q.explanation, lang)}
+              <span className="font-semibold text-leaf-900">Why:</span> {t(q.explanation, lang)}
             </p>
           </li>
         ))}

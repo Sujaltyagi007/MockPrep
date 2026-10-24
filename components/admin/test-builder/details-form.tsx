@@ -1,14 +1,28 @@
 "use client";
 import { cn } from "@/lib/utils";
 import type { Dispatch } from "react";
-import { categoryLabels } from "@/lib/i18n";
 import type { ExamCategory } from "@/lib/types";
 import type { DraftAction } from "./draft-reducer";
 import { inputClass } from "@/components/admin/ui";
 import type { ExamOption } from "@/lib/admin/test-drafts";
-import { suggestedDuration, type DraftData } from "@/lib/import/draft";
+import { categoryLabels, difficultyLabels, drillSubjectLabels } from "@/lib/i18n";
+import { DIFFICULTIES, DRILL_SUBJECTS, suggestedDuration, type DraftData } from "@/lib/import/draft";
 
 const CATEGORIES = Object.keys(categoryLabels) as ExamCategory[];
+
+const KINDS = [
+  { value: "MOCK", label: "Full mock", hint: "A complete paper in the exam pattern." },
+  { value: "DRILL", label: "Topic drill", hint: "A short practice set on one topic." },
+] as const;
+
+function Choice({ selected, onClick, children }: { selected: boolean; onClick: () => void; children: React.ReactNode }) {
+  return (
+    <button type="button" aria-pressed={selected} onClick={onClick}
+      className={cn("h-10 rounded-xl border px-4 text-sm font-semibold transition", selected ? "border-forest bg-forest text-white" : "border-black/10 bg-white text-ink hover:bg-sand")}>
+      {children}
+    </button>
+  );
+}
 
 function Field({ label, hint, children }: { label: string; hint?: string; children: React.ReactNode }) {
   return (
@@ -39,6 +53,45 @@ export function DetailsForm({ data, dispatch, exams }: { data: DraftData; dispat
       <Field label="Short description" hint="One line about what the test covers.">
         <textarea value={data.summary} onChange={(e) => set({ summary: e.target.value })} rows={2} className={inputClass} />
       </Field>
+
+      <fieldset>
+        <legend className="text-sm font-semibold text-ink">Test type</legend>
+        <div className="mt-2 grid gap-2 sm:grid-cols-2">
+          {KINDS.map((k) => (
+            <button key={k.value} type="button" aria-pressed={data.kind === k.value}
+              onClick={() => set(k.value === "DRILL" ? { kind: "DRILL" } : { kind: "MOCK", drillSubject: null, difficulty: null })}
+              className={cn("rounded-xl border px-4 py-3 text-left transition", data.kind === k.value ? "border-forest bg-forest-tint/60" : "border-black/10 bg-white hover:bg-sand")}>
+              <span className="block text-sm font-semibold text-ink">{k.label}</span>
+              <span className="block text-xs text-body">{k.hint}</span>
+            </button>
+          ))}
+        </div>
+      </fieldset>
+
+      {data.kind === "DRILL" && (
+        <div className="grid gap-5 rounded-xl bg-sand/60 p-4">
+          <fieldset>
+            <legend className="text-sm font-semibold text-ink">Drill subject</legend>
+            <div className="mt-2 flex flex-wrap gap-2">
+              {DRILL_SUBJECTS.map((subject) => (
+                <Choice key={subject} selected={data.drillSubject === subject} onClick={() => set({ drillSubject: subject })}>
+                  {drillSubjectLabels[subject]}
+                </Choice>
+              ))}
+            </div>
+          </fieldset>
+          <fieldset>
+            <legend className="text-sm font-semibold text-ink">Difficulty</legend>
+            <div className="mt-2 flex flex-wrap gap-2">
+              {DIFFICULTIES.map((level) => (
+                <Choice key={level} selected={data.difficulty === level} onClick={() => set({ difficulty: level })}>
+                  {difficultyLabels[level]}
+                </Choice>
+              ))}
+            </div>
+          </fieldset>
+        </div>
+      )}
 
       <div className="grid gap-5 sm:grid-cols-2">
         <Field label="Category">
@@ -80,31 +133,18 @@ export function DetailsForm({ data, dispatch, exams }: { data: DraftData; dispat
         <legend className="text-sm font-semibold text-ink">Negative marking for a wrong answer</legend>
         <div className="mt-2 flex flex-wrap gap-2">
           {negativeOptions.map((o) => (
-            <button
-              key={o.label}
-              type="button"
-              aria-pressed={data.marksWrong === o.value}
-              onClick={() => set({ marksWrong: o.value })}
-              className={cn(
+            <button key={o.label} type="button" aria-pressed={data.marksWrong === o.value}
+              onClick={() => set({ marksWrong: o.value })} className={cn(
                 "h-10 rounded-xl border px-4 text-sm font-semibold transition",
                 data.marksWrong === o.value ? "border-forest bg-forest text-white" : "border-black/10 bg-white text-ink hover:bg-sand",
-              )}
-            >
+              )}>
               {o.label}
               {o.value !== 0 && <span className="ml-1 font-normal opacity-80">({o.value})</span>}
             </button>
           ))}
           <label className={cn("flex h-10 items-center gap-2 rounded-xl border px-3 text-sm", custom ? "border-forest" : "border-black/10")}>
             <span className="font-semibold text-ink">Custom</span>
-            <input
-              type="number"
-              max={0}
-              step={0.01}
-              value={data.marksWrong}
-              onChange={(e) => set({ marksWrong: -Math.abs(Number(e.target.value)) })}
-              className="w-20 bg-transparent text-right outline-none"
-              aria-label="Custom negative marks"
-            />
+            <input type="number" max={0} step={0.01} value={data.marksWrong} onChange={(e) => set({ marksWrong: -Math.abs(Number(e.target.value)) })} className="w-20 bg-transparent text-right outline-none" aria-label="Custom negative marks" />
           </label>
         </div>
       </fieldset>

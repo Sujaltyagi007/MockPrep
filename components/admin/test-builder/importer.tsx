@@ -1,13 +1,13 @@
 "use client";
 import { useState } from "react";
-import { Fragment } from "react/jsx-runtime";
 import { cn } from "@/lib/utils";
-import { FileDrop } from "./file-drop";
 import { Stepper } from "./stepper";
+import { FileDrop } from "./file-drop";
 import { useRouter } from "next/navigation";
+import { Fragment } from "react/jsx-runtime";
 import { createDraft } from "@/app/admin/tests/actions";
-import { parseQuestions } from "@/lib/import/parse-questions";
 import { emptyQuestion, newDraft } from "@/lib/import/draft";
+import { parseQuestions } from "@/lib/import/parse-questions";
 import { Notice, PageHeader, buttonClass, inputClass } from "@/components/admin/ui";
 import { ClipboardPaste, FileStack, FileText, LoaderCircle, PencilLine, type LucideIcon } from "lucide-react";
 
@@ -19,7 +19,6 @@ const modes: { id: Mode; icon: LucideIcon; title: string; text: string }[] = [
   { id: "paste", icon: ClipboardPaste, title: "Paste text", text: "Copy from Word, a website or an email" },
 ];
 
-/** PDF → text on the server; .txt files are read in the browser. */
 async function readFile(file: File): Promise<string> {
   if (file.type === "text/plain" || file.name.toLowerCase().endsWith(".txt")) return file.text();
   const body = new FormData();
@@ -83,17 +82,7 @@ export function TestImporter() {
         <h2 className="font-display text-lg font-semibold text-ink">What do you have?</h2>
         <div role="radiogroup" aria-label="What do you have?" className="mt-4 grid gap-3 sm:grid-cols-3">
           {modes.map(({ id, icon: Icon, title, text }) => (
-            <button
-              key={id}
-              type="button"
-              role="radio"
-              aria-checked={mode === id}
-              onClick={() => setMode(id)}
-              className={cn(
-                "flex flex-col gap-2 rounded-2xl border-2 p-4 text-left transition",
-                mode === id ? "border-forest bg-forest-tint/50" : "border-black/8 hover:border-forest/40",
-              )}
-            >
+            <button key={id} type="button" role="radio" aria-checked={mode === id} onClick={() => setMode(id)} className={cn("flex flex-col gap-2 rounded-2xl border-2 p-4 text-left transition", mode === id ? "border-forest bg-forest-tint/50" : "border-black/8 hover:border-forest/40")}>
               <Icon className={cn("size-5", mode === id ? "text-forest" : "text-body")} aria-hidden />
               <span className="text-sm font-semibold text-ink">{title}</span>
               <span className="text-xs leading-5 text-body">{text}</span>
@@ -106,11 +95,7 @@ export function TestImporter() {
             <Fragment>
               <label className="block">
                 <span className="mb-1.5 block text-sm font-semibold text-ink">Questions</span>
-                <textarea
-                  rows={10}
-                  value={pasted}
-                  onChange={(e) => setPasted(e.target.value)}
-                  placeholder={"1. Which Article guarantees the Right to Constitutional Remedies?\n(a) Article 19\n(b) Article 21\n(c) Article 32\n(d) Article 226\nAnswer: (c)"}
+                <textarea rows={10} value={pasted} onChange={(e) => setPasted(e.target.value)} placeholder={"1. Which Article guarantees the Right to Constitutional Remedies?\n(a) Article 19\n(b) Article 21\n(c) Article 32\n(d) Article 226\nAnswer: (c)"}
                   className={cn(inputClass, "font-mono text-[13px]")}
                 />
               </label>

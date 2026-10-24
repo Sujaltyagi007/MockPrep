@@ -1,5 +1,5 @@
 import "./globals.css";
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import { PreferencesProvider } from "@/context/preferences-context";
 
@@ -19,6 +19,13 @@ export const metadata: Metadata = {
     template: "%s · MockPrep",
   },
   description: "Bilingual timed mock tests, step-by-step job application guides and exam roadmaps. Free for every aspirant.",
+};
+
+// viewport-fit=cover lets env(safe-area-inset-*) pad around phone notches.
+export const viewport: Viewport = {
+  width: "device-width",
+  initialScale: 1,
+  viewportFit: "cover",
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {

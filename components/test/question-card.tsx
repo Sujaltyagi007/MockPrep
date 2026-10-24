@@ -43,7 +43,7 @@ export function QuestionCard() {
           {test.marking.wrong < 0 && ` · ${test.marking.wrong} wrong`}
         </span>
       </div>
-      <h1 id="question-text" className="mt-3 text-xl font-semibold leading-snug text-navy-950 sm:text-2xl">
+      <h1 id="question-text" className="mt-3 text-xl font-semibold leading-snug text-ink sm:text-2xl">
         {t(question.prompt, lang)}
       </h1>
 
@@ -51,7 +51,7 @@ export function QuestionCard() {
         {question.options.map((option, i) => {
           const selected = chosen === i;
           return (
-            <button key={i} type="button" role="radio" aria-checked={selected} onClick={() => choose(i)} className={cn("flex min-h-14 w-full items-center gap-4 rounded-xl border-2 px-4 py-3 text-left transition-colors", selected ? "border-leaf-500 bg-leaf-50 font-semibold text-leaf-800" : "border-slate-200 text-navy-950 hover:border-slate-300 hover:bg-slate-50")}>
+            <button key={i} type="button" role="radio" aria-checked={selected} onClick={() => choose(i)} className={cn("flex min-h-14 w-full items-center gap-4 rounded-xl border-2 px-4 py-3 text-left transition-colors", selected ? "border-leaf-500 bg-leaf-50 font-semibold text-leaf-800" : "border-slate-200 text-ink hover:border-slate-300 hover:bg-slate-50")}>
               <span className={cn("grid size-8 shrink-0 place-items-center rounded-lg text-sm font-bold", selected ? "bg-leaf-600 text-white" : "bg-slate-100 text-slate-600")}>{String.fromCharCode(65 + i)}</span>
               <span className="flex-1">{t(option, lang)}</span>
               {selected && <Check className="size-5 shrink-0 text-leaf-600" aria-hidden />}

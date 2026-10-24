@@ -63,6 +63,26 @@ enum ApplicationStatus {
   JOINED
 }
 
+/// Full mock: a complete exam-pattern paper. Drill: a short topic practice set.
+enum TestKind {
+  MOCK
+  DRILL
+}
+
+enum DrillSubject {
+  QUANT
+  REASONING
+  GK
+  COMPUTER
+  ENGLISH
+}
+
+enum Difficulty {
+  EASY
+  MODERATE
+  HARD
+}
+
 enum Role {
   STUDENT
   EDITOR
@@ -158,6 +178,9 @@ model Test {
   marksWrong      Float         @default(0) // zero or negative
   languages       Lang[]        @default([en])
   featured        Boolean       @default(false)
+  kind            TestKind      @default(MOCK)
+  drillSubject    DrillSubject? // drills only
+  difficulty      Difficulty? // drills only
   status          PublishStatus @default(DRAFT)
   publishedAt     DateTime?
 
@@ -168,6 +191,7 @@ model Test {
   draft     TestDraft?
 
   @@index([status, category])
+  @@index([status, kind])
   @@map("tests")
 }
 

@@ -8,17 +8,7 @@ import { CheckCircle2, Circle, ExternalLink, LoaderCircle, PartyPopper, Rocket }
 
 type Check = { label: string; ok: boolean; fix?: { step: number; label: string } };
 
-export function PublishPanel({
-  data,
-  isUpdate,
-  onGoTo,
-  onPublish,
-}: {
-  data: DraftData;
-  isUpdate: boolean;
-  onGoTo: (step: number, filter?: "fix" | "todo") => void;
-  onPublish: () => Promise<{ ok: true; slug: string } | { ok: false; problems: string[] }>;
-}) {
+export function PublishPanel({ data, isUpdate, onGoTo, onPublish }: { data: DraftData; isUpdate: boolean; onGoTo: (step: number, filter?: "fix" | "todo") => void; onPublish: () => Promise<{ ok: true; slug: string } | { ok: false; problems: string[] }> }) {
   const [state, setState] = useState<{ phase: "idle" | "publishing" } | { phase: "done"; slug: string } | { phase: "error"; problems: string[] }>({ phase: "idle" });
 
   const n = data.questions.length;

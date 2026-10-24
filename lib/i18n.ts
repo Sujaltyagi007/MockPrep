@@ -1,4 +1,4 @@
-import type { ExamCategory, Lang, LocalizedText, Qualification } from "./types";
+import type { Difficulty, DrillSubject, ExamCategory, Lang, LocalizedText, Qualification } from "./types";
 
 export const languages: { code: Lang; label: string }[] = [
   { code: "en", label: "English" },
@@ -33,4 +33,18 @@ export const categoryLabels: Record<ExamCategory, string> = {
   STATE_PSC: "State PSC",
   TECH: "Tech & IT",
   TEACHING: "Teaching",
+};
+
+export const drillSubjectLabels: Record<DrillSubject, string> = {
+  QUANT: "Quantitative",
+  REASONING: "Reasoning",
+  GK: "GK & Current Affairs",
+  COMPUTER: "Computer / IT",
+  ENGLISH: "English",
+};
+
+export const difficultyLabels: Record<Difficulty, string> = {
+  EASY: "Easy",
+  MODERATE: "Moderate",
+  HARD: "Hard",
 };

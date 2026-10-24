@@ -3,7 +3,7 @@
 // and resumed; publishing validates it with `publishProblems` first.
 // Pure module: shared by the browser editor and the server actions.
 
-import type { ExamCategory } from "@/lib/types";
+import type { Difficulty, DrillSubject, ExamCategory, TestKind } from "@/lib/types";
 
 export type DraftQuestion = {
   /** Stable key for React lists and edits. */
@@ -31,6 +31,11 @@ export type DraftData = {
   /** Zero or negative. */
   marksWrong: number;
   featured: boolean;
+  kind: TestKind;
+  /** Drills only. */
+  drillSubject: DrillSubject | null;
+  /** Drills only. */
+  difficulty: Difficulty | null;
   questions: DraftQuestion[];
   /** File names the questions came from, for reference. */
   sources: string[];
@@ -63,6 +68,9 @@ export function newDraft(questions: DraftQuestion[], sources: string[] = [], war
     marksCorrect: 1,
     marksWrong: 0,
     featured: true,
+    kind: "MOCK",
+    drillSubject: null,
+    difficulty: null,
     questions,
     sources,
     warnings,
@@ -97,6 +105,8 @@ export function publishProblems(d: DraftData): string[] {
   if (!(d.durationMinutes >= 1 && d.durationMinutes <= 600)) problems.push("Set a duration between 1 and 600 minutes.");
   if (!(d.marksCorrect > 0)) problems.push("Marks for a correct answer must be above 0.");
   if (d.marksWrong > 0) problems.push("Negative marking must be 0 or below.");
+  if (d.kind === "DRILL" && !d.drillSubject) problems.push("Choose the drill subject.");
+  if (d.kind === "DRILL" && !d.difficulty) problems.push("Choose the drill difficulty.");
   return problems;
 }
 
@@ -109,6 +119,13 @@ export function sectionsOf(d: DraftData): string[] {
  * Narrow untrusted JSON (from the database or a client request) to DraftData,
  * filling defaults. Throws on shapes that can't be repaired.
  */
+export const DRILL_SUBJECTS: DrillSubject[] = ["QUANT", "REASONING", "GK", "COMPUTER", "ENGLISH"];
+export const DIFFICULTIES: Difficulty[] = ["EASY", "MODERATE", "HARD"];
+
+function oneOf<T extends string>(value: unknown, allowed: T[]): T | null {
+  return allowed.includes(value as T) ? (value as T) : null;
+}
+
 export function parseDraftData(value: unknown): DraftData {
   if (!value || typeof value !== "object") throw new Error("Draft data is not an object");
   const v = value as Partial<DraftData>;
@@ -122,6 +139,9 @@ export function parseDraftData(value: unknown): DraftData {
     durationMinutes: Number(v.durationMinutes ?? base.durationMinutes),
     marksCorrect: Number(v.marksCorrect ?? base.marksCorrect),
     marksWrong: Number(v.marksWrong ?? base.marksWrong),
+    kind: v.kind === "DRILL" ? "DRILL" : "MOCK",
+    drillSubject: v.kind === "DRILL" ? oneOf(v.drillSubject, DRILL_SUBJECTS) : null,
+    difficulty: v.kind === "DRILL" ? oneOf(v.difficulty, DIFFICULTIES) : null,
     sources: Array.isArray(v.sources) ? v.sources.map(String) : [],
     warnings: Array.isArray(v.warnings) ? v.warnings.map(String) : [],
     questions: v.questions.map((q) => ({

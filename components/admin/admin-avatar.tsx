@@ -10,7 +10,7 @@ interface AdminAvatarProps {
 }
 
 const sizeClasses = {
-  xs: "size-6 text-[10px]",
+  xs: "size-6 text-xs",
   sm: "size-8 text-xs",
   md: "size-10 text-sm",
   lg: "size-12 text-base",

@@ -6,8 +6,8 @@ import { draftReducer } from "./draft-reducer";
 import { QuestionCard } from "./question-card";
 import { PublishPanel } from "./publish-panel";
 import { Fragment } from "react/jsx-runtime";
-import { ConfirmDialog } from "@/components/admin/confirm-dialog";
 import type { ExamOption } from "@/lib/admin/test-drafts";
+import { ConfirmDialog } from "@/components/admin/confirm-dialog";
 import { Notice, PageHeader, buttonClass } from "@/components/admin/ui";
 import { deleteDraft, publishDraft, saveDraft } from "@/app/admin/tests/actions";
 import { questionIssues, sectionsOf, type DraftData } from "@/lib/import/draft";
@@ -17,10 +17,6 @@ import { ArrowLeft, ArrowRight, CheckCheck, CircleAlert, CloudCheck, LoaderCircl
 type Filter = "all" | "fix" | "todo";
 type SaveState = "saved" | "saving" | "error";
 
-/**
- * Steps 2–4 of the test builder for one draft. Every change autosaves (debounced,
- * saves run one at a time in order), so reviewers can leave and come back.
- */
 export function TestEditor({ draftId, initial, liveSlug, exams }: { draftId: string; initial: DraftData; liveSlug: string | null; exams: ExamOption[] }) {
   const [data, dispatch] = useReducer(draftReducer, initial);
   const [step, setStep] = useState(1);
@@ -31,7 +27,6 @@ export function TestEditor({ draftId, initial, liveSlug, exams }: { draftId: str
   const [filter, setFilter] = useState<{ kind: Filter; keys: Set<string> }>({ kind: "all", keys: new Set() });
   const sectionListId = useId();
 
-  // ── Autosave ──
   const queue = useRef(Promise.resolve());
   const dirty = useRef(false);
   const latest = useRef(data);
@@ -74,17 +69,13 @@ export function TestEditor({ draftId, initial, liveSlug, exams }: { draftId: str
     return () => window.removeEventListener("beforeunload", warn);
   }, []);
 
-  // ── Derived ──
   const issueCount = useMemo(() => data.questions.filter((q) => questionIssues(q).length > 0).length, [data.questions]);
   const readyKeys = useMemo(() => data.questions.filter((q) => !q.approved && questionIssues(q).length === 0).map((q) => q.key), [data.questions]);
   const todoCount = data.questions.filter((q) => !q.approved).length;
   const sections = sectionsOf(data);
 
-  /** Filters keep the questions they showed when chosen, so a card doesn't vanish mid-edit. */
   const chooseFilter = (kind: Filter) => {
-    const keys = new Set(
-      data.questions.filter((q) => (kind === "fix" ? questionIssues(q).length > 0 : kind === "todo" ? !q.approved : true)).map((q) => q.key),
-    );
+    const keys = new Set(data.questions.filter((q) => (kind === "fix" ? questionIssues(q).length > 0 : kind === "todo" ? !q.approved : true)).map((q) => q.key));
     setFilter({ kind, keys });
   };
   const visible = data.questions.map((q, i) => ({ q, n: i + 1 })).filter(({ q }) => filter.kind === "all" || filter.keys.has(q.key));
@@ -96,7 +87,7 @@ export function TestEditor({ draftId, initial, liveSlug, exams }: { draftId: str
   };
 
   async function publish() {
-    await persist(latest.current); // make sure the server has the latest edits
+    await persist(latest.current);
     const result = await publishDraft(draftId);
     if (result.ok) {
       dirty.current = false;
@@ -151,13 +142,7 @@ export function TestEditor({ draftId, initial, liveSlug, exams }: { draftId: str
                   ["todo", `Not approved ${todoCount}`],
                 ] as const
               ).map(([kind, label]) => (
-                <button
-                  key={kind}
-                  type="button"
-                  aria-pressed={filter.kind === kind}
-                  onClick={() => chooseFilter(kind)}
-                  className={cn("h-9 rounded-xl px-3 text-xs font-semibold transition", filter.kind === kind ? "bg-ink text-white" : "text-body hover:bg-sand hover:text-ink")}
-                >
+                <button key={kind} type="button" aria-pressed={filter.kind === kind} onClick={() => chooseFilter(kind)} className={cn("h-9 rounded-xl px-3 text-xs font-semibold transition", filter.kind === kind ? "bg-ink text-white" : "text-body hover:bg-sand hover:text-ink")}>
                   {label}
                 </button>
               ))}
@@ -216,17 +201,10 @@ export function TestEditor({ draftId, initial, liveSlug, exams }: { draftId: str
 
       {step === 3 && <PublishPanel data={data} isUpdate={Boolean(liveSlug)} onGoTo={goTo} onPublish={publish} />}
 
-      <ConfirmDialog
-        isOpen={deleting}
-        onClose={() => setDeleting(false)}
-        onConfirm={async () => {
-          dirty.current = false;
-          await deleteDraft(draftId);
-        }}
-        title="Delete this draft?"
-        description={liveSlug ? "Your unpublished changes will be lost. The live test stays as it is." : "The imported questions and everything you've checked will be deleted."}
-        confirmLabel="Delete draft"
-      />
+      <ConfirmDialog isOpen={deleting} onClose={() => setDeleting(false)} onConfirm={async () => {
+        dirty.current = false;
+        await deleteDraft(draftId);
+      }} title="Delete this draft?" description={liveSlug ? "Your unpublished changes will be lost. The live test stays as it is." : "The imported questions and everything you've checked will be deleted."} confirmLabel="Delete draft" />
     </div>
   );
 }

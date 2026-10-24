@@ -32,7 +32,7 @@ export function QuestionPalette() {
 
   return (
     <aside aria-label="Question palette" className="h-fit rounded-2xl border border-slate-200 bg-white p-5 lg:sticky lg:top-24">
-      <h2 className="font-semibold text-navy-950">Questions</h2>
+      <h2 className="font-semibold text-ink">Questions</h2>
       <p className="mt-1 text-sm text-slate-600">{answered} answered · {test.questions.length - answered} remaining</p>
       <ol className="mt-4 grid grid-cols-5 gap-2">
         {test.questions.map((q, i) => {
@@ -44,7 +44,7 @@ export function QuestionPalette() {
                 aria-label={`Question ${i + 1}, ${status}`}
                 aria-current={current ? "step" : undefined}
                 className={cn("grid h-11 w-full place-items-center rounded-lg text-sm font-semibold",
-                  statusStyles[status], current && "outline-2 outline-offset-2 outline-navy-900",
+                  statusStyles[status], current && "outline-2 outline-offset-2 outline-leaf-800",
                 )}              >
                 {i + 1}
               </button>

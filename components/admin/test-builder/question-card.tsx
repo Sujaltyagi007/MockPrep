@@ -1,18 +1,16 @@
 "use client";
-import { memo, useId } from "react";
 import { cn } from "@/lib/utils";
+import { memo, useId } from "react";
 import type { Dispatch } from "react";
 import { Badge } from "@/components/admin/ui";
 import type { DraftAction } from "./draft-reducer";
-import { questionIssues, type DraftQuestion } from "@/lib/import/draft";
 import { AlertTriangle, Check, Plus, Trash2, X } from "lucide-react";
+import { questionIssues, type DraftQuestion } from "@/lib/import/draft";
 
 const LETTERS = ["A", "B", "C", "D", "E", "F"];
 
-const field =
-  "w-full rounded-xl border border-black/10 bg-white px-3 py-2 text-[14px] text-ink outline-none transition [field-sizing:content] placeholder:text-ink/35 focus:border-forest focus:ring-2 focus:ring-forest/20";
+const field = "w-full rounded-xl border border-black/10 bg-white px-3 py-2 text-[14px] text-ink outline-none transition [field-sizing:content] placeholder:text-ink/35 focus:border-forest focus:ring-2 focus:ring-forest/20";
 
-/** One editable question in the review step. Memoised: only the edited card re-renders. */
 export const QuestionCard = memo(function QuestionCard({
   question: q,
   number,
@@ -37,14 +35,12 @@ export const QuestionCard = memo(function QuestionCard({
     });
 
   return (
-    <article
-      aria-labelledby={`${id}-n`}
-      className={cn(
-        "rounded-2xl border bg-white p-4 shadow-2xs sm:p-5",
-        status === "fix" && "border-honey border-l-4 border-l-sun",
-        status === "ready" && "border-black/8",
-        status === "approved" && "border-forest/25",
-      )}
+    <article aria-labelledby={`${id}-n`} className={cn(
+      "rounded-2xl border bg-white p-4 shadow-2xs sm:p-5",
+      status === "fix" && "border-honey border-l-4 border-l-sun",
+      status === "ready" && "border-black/8",
+      status === "approved" && "border-forest/25",
+    )}
     >
       <header className="flex flex-wrap items-center gap-2">
         <h3 id={`${id}-n`} className="font-display text-base font-bold text-ink">
@@ -86,29 +82,11 @@ export const QuestionCard = memo(function QuestionCard({
             return (
               <li key={i} className={cn("flex items-center gap-2 rounded-xl p-1 pr-1.5", correct && "bg-forest-tint")}>
                 <label className="grid size-9 shrink-0 cursor-pointer place-items-center rounded-lg" title="Mark as correct answer">
-                  <input
-                    type="radio"
-                    name={`${id}-answer`}
-                    checked={correct}
-                    onChange={() => set({ answerIndex: i })}
-                    className="size-4 accent-forest"
-                    aria-label={`Option ${LETTERS[i]} is correct`}
-                  />
+                  <input type="radio" name={`${id}-answer`} checked={correct} onChange={() => set({ answerIndex: i })} className="size-4 accent-forest" aria-label={`Option ${LETTERS[i]} is correct`} />
                 </label>
                 <span className={cn("w-4 shrink-0 text-xs font-bold", correct ? "text-forest" : "text-body")}>{LETTERS[i]}</span>
-                <input
-                  value={option}
-                  onChange={(e) => setOption(i, e.target.value)}
-                  placeholder={`Option ${LETTERS[i]}`}
-                  aria-label={`Option ${LETTERS[i]}`}
-                  className={cn(field, "h-10 py-0")}
-                />
-                <button
-                  type="button"
-                  onClick={() => removeOption(i)}
-                  aria-label={`Remove option ${LETTERS[i]}`}
-                  className="grid size-9 shrink-0 place-items-center rounded-lg text-ink/35 hover:bg-blush/50 hover:text-brick"
-                >
+                <input value={option} onChange={(e) => setOption(i, e.target.value)} placeholder={`Option ${LETTERS[i]}`} aria-label={`Option ${LETTERS[i]}`} className={cn(field, "h-10 py-0")} />
+                <button type="button" onClick={() => removeOption(i)} aria-label={`Remove option ${LETTERS[i]}`} className="grid size-9 shrink-0 place-items-center rounded-lg text-ink/35 hover:bg-blush/50 hover:text-brick">
                   <X className="size-4" aria-hidden />
                 </button>
               </li>
@@ -155,17 +133,7 @@ export const QuestionCard = memo(function QuestionCard({
             <Plus className="size-3.5" aria-hidden /> Insert below
           </button>
         </div>
-        <button
-          type="button"
-          aria-pressed={q.approved}
-          disabled={issues.length > 0 && !q.approved}
-          title={issues.length ? "Fix the problems above first" : undefined}
-          onClick={() => set({ approved: !q.approved })}
-          className={cn(
-            "inline-flex h-10 items-center gap-2 rounded-xl px-4 text-sm font-semibold transition disabled:cursor-not-allowed disabled:opacity-50",
-            q.approved ? "bg-forest-tint text-forest hover:bg-forest-tint/70" : "bg-forest text-white hover:brightness-110",
-          )}
-        >
+        <button type="button" aria-pressed={q.approved} disabled={issues.length > 0 && !q.approved} title={issues.length ? "Fix the problems above first" : undefined} onClick={() => set({ approved: !q.approved })} className={cn("inline-flex h-10 items-center gap-2 rounded-xl px-4 text-sm font-semibold transition disabled:cursor-not-allowed disabled:opacity-50", q.approved ? "bg-forest-tint text-forest hover:bg-forest-tint/70" : "bg-forest text-white hover:brightness-110")}>
           <Check className="size-4" aria-hidden /> {q.approved ? "Approved" : "Approve"}
         </button>
       </footer>

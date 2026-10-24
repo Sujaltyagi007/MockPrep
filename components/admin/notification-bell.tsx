@@ -45,16 +45,10 @@ export function NotificationBell() {
 
   return (
     <div ref={containerRef} className="relative">
-      <button
-        type="button"
-        onClick={() => setOpen((prev) => !prev)}
-        aria-label="Notifications"
-        title="Admin Notifications"
-        className="relative inline-flex size-10 items-center justify-center rounded-xl border border-black/10 bg-white text-ink transition hover:-translate-y-0.5 hover:border-forest/25 hover:bg-sand focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-forest"
-      >
+      <button type="button" onClick={() => setOpen((prev) => !prev)} aria-label="Notifications" title="Admin Notifications" className="relative inline-flex size-10 items-center justify-center rounded-xl border border-black/10 bg-white text-ink transition hover:-translate-y-0.5 hover:border-forest/25 hover:bg-sand focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-forest">
         <Bell className="size-4.5" />
         {unreadCount > 0 && (
-          <span className="absolute -top-1.5 -right-1.5 flex h-5 min-w-5 items-center justify-center rounded-full bg-flame px-1 text-[10.5px] font-bold text-white tabular-nums ring-2 ring-white">
+          <span className="absolute -top-1.5 -right-1.5 flex h-5 min-w-5 items-center justify-center rounded-full bg-flame px-1 text-xs font-bold text-white tabular-nums ring-2 ring-white">
             {unreadCount}
           </span>
         )}
@@ -65,15 +59,11 @@ export function NotificationBell() {
           <div className="flex items-center justify-between border-b border-black/5 pb-2.5 px-2">
             <div className="flex items-center gap-2">
               <span className="font-display text-sm font-bold text-ink">Notifications</span>
-              <span className="rounded-full bg-forest-tint px-2 py-0.5 text-[10px] font-bold text-forest">
+              <span className="rounded-full bg-forest-tint px-2 py-0.5 text-xs font-bold text-forest">
                 {unreadCount} new
               </span>
             </div>
-            <Link
-              href="/admin/notifications"
-              onClick={() => setOpen(false)}
-              className="text-xs font-semibold text-forest hover:underline"
-            >
+            <Link href="/admin/notifications" onClick={() => setOpen(false)} className="text-xs font-semibold text-forest hover:underline">
               View all
             </Link>
           </div>
@@ -90,7 +80,7 @@ export function NotificationBell() {
                     )}
                     {n.title}
                   </p>
-                  <span className="text-[10px] text-body whitespace-nowrap">{n.time}</span>
+                  <span className="text-xs text-body whitespace-nowrap">{n.time}</span>
                 </div>
                 <p className="mt-1 text-xs text-body leading-relaxed">{n.text}</p>
               </div>
@@ -98,11 +88,7 @@ export function NotificationBell() {
           </div>
 
           <div className="border-t border-black/5 pt-2 text-center">
-            <Link
-              href="/admin/notifications"
-              onClick={() => setOpen(false)}
-              className="inline-flex items-center gap-1 text-xs font-semibold text-ink hover:text-forest transition"
-            >
+            <Link href="/admin/notifications" onClick={() => setOpen(false)} className="inline-flex items-center gap-1 text-xs font-semibold text-ink hover:text-forest transition">
               <span>Manage all alerts & triggers</span>
               <ChevronRight className="size-3.5" />
             </Link>

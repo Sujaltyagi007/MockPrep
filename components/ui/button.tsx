@@ -3,10 +3,10 @@ import { cn } from "@/lib/utils";
 import type { ComponentProps } from "react";
 
 const variants = {
-  primary: "bg-navy-900 text-white hover:bg-navy-800",
+  primary: "bg-leaf-800 text-white hover:bg-leaf-900",
   success: "bg-leaf-600 text-white hover:bg-leaf-700",
-  outline: "border border-slate-300 bg-white text-navy-900 hover:bg-slate-50",
-  ghost: "text-slate-600 hover:text-navy-950",
+  outline: "border border-slate-300 bg-white text-leaf-900 hover:bg-slate-50",
+  ghost: "text-slate-600 hover:text-ink",
 } as const;
 
 const sizes = {

@@ -18,8 +18,8 @@ export function SubmitDialog() {
   }, [confirmingSubmit]);
 
   return (
-    <dialog ref={ref} onClose={cancelSubmit} aria-labelledby="submit-title" className="m-auto w-[calc(100%-2rem)] max-w-sm rounded-2xl bg-white p-6 shadow-xl backdrop:bg-navy-950/50">
-      <h2 id="submit-title" className="text-lg font-semibold text-navy-950">Submit your test?</h2>
+    <dialog ref={ref} onClose={cancelSubmit} aria-labelledby="submit-title" className="m-auto w-[calc(100%-2rem)] max-w-sm rounded-2xl bg-white p-6 shadow-xl backdrop:bg-black/40">
+      <h2 id="submit-title" className="text-lg font-semibold text-ink">Submit your test?</h2>
       <p className="mt-2 text-slate-600">
         {unanswered === 0 ? "You have answered every question." : `${unanswered} question${unanswered === 1 ? " is" : "s are"} still unanswered.`}{" "}
         You can’t change answers after submitting.

@@ -5,10 +5,7 @@ import { DEFAULT_ADMIN } from "@/lib/admin/types";
 
 function SidebarSkeleton() {
   return (
-    <aside
-      aria-hidden
-      className="sticky top-0 z-40 hidden h-screen w-17 shrink-0 border-r border-black/8 bg-white py-3.5 select-none lg:flex flex-col items-center justify-between"
-    >
+    <aside aria-hidden className="sticky top-0 z-40 hidden h-screen-dvh w-17 shrink-0 border-r border-black/8 bg-white py-3.5 select-none lg:flex flex-col items-center justify-between">
       <div className="flex flex-col items-center gap-4">
         <div className="skeleton size-11 rounded-2xl" />
         <div className="h-px w-8 bg-black/8" />
@@ -25,15 +22,11 @@ function SidebarSkeleton() {
 
 export default function AdminLayout({ children }: { children: ReactNode }) {
   return (
-    <AdminShell
-      admin={DEFAULT_ADMIN}
-      unreadNotifications={2}
-      headerActions={
-        <Suspense fallback={null}>
-          <NotificationBell />
-        </Suspense>
-      }
-    >
+    <AdminShell admin={DEFAULT_ADMIN} unreadNotifications={2} headerActions={
+      <Suspense fallback={null}>
+        <NotificationBell />
+      </Suspense>
+    }>
       {children}
     </AdminShell>
   );

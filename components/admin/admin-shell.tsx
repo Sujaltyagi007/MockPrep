@@ -40,7 +40,7 @@ export function AdminShell({
 
   return (
     <AdminShellContext.Provider value={{ menuOpen, openMenu: () => setMenuOpen(true), closeMenu: () => setMenuOpen(false), }}>
-      <div data-admin className="flex min-h-screen w-full bg-sand text-ink">
+      <div data-admin className="flex min-h-screen-dvh w-full bg-sand text-ink">
         <AdminThemeProvider />
         {sidebar ? (sidebar) : (<Suspense fallback={null}>
           <AppSidebar admin={admin} unreadNotifications={unreadNotifications} mobileOpen={menuOpen} onMobileClose={() => setMenuOpen(false)} />

@@ -3,9 +3,9 @@ import Link from "next/link";
 import type { Admin } from "@/lib/admin/types";
 import { AdminAvatar } from "@/components/admin/admin-avatar";
 import { usePathname, useSearchParams } from "next/navigation";
+import { accountHref, accountSectionsFor } from "@/lib/admin/account-sections";
 import { useState, useEffect, useMemo, useCallback, useSyncExternalStore, Fragment, type ReactNode } from "react";
 import { LayoutDashboard, BookOpenCheck, HelpCircle, Briefcase, UsersRound, Bell, UserCog, LogOut, PanelLeftClose, PanelLeftOpen, Search, X, ChevronRight, ShieldCheck, Sparkles, FileText, Sliders, CheckCircle2, GraduationCap, type LucideIcon, } from "lucide-react";
-import { accountHref, accountSectionsFor } from "@/lib/admin/account-sections";
 
 export interface AppSidebarProps {
   admin: Admin;
@@ -68,12 +68,7 @@ const getRailTabFromPath = (pathname: string): RailTabId => {
   return "dashboard";
 };
 
-export function AppSidebar({
-  admin,
-  unreadNotifications = 2,
-  mobileOpen,
-  onMobileClose,
-}: AppSidebarProps) {
+export function AppSidebar({ admin, unreadNotifications = 2, mobileOpen, onMobileClose, }: AppSidebarProps) {
   const pathname = usePathname();
   const searchParams = useSearchParams();
   const accountTab = searchParams.get("tab") ?? "profile";
@@ -240,7 +235,7 @@ export function AppSidebar({
                     </span>
                     {Boolean(item.badge && item.badge > 0) && (
                       <span
-                        className={`absolute -top-1 -right-1 flex min-w-4.5 items-center justify-center rounded-full px-1 py-0.5 text-[10px] font-bold leading-none ${isHighlighted ? "bg-flame text-white shadow" : "bg-flame text-white"
+                        className={`absolute -top-1 -right-1 flex min-w-4.5 items-center justify-center rounded-full px-1 py-0.5 text-xs font-bold leading-none ${isHighlighted ? "bg-flame text-white shadow" : "bg-flame text-white"
                           }`}
                       >
                         {item.badge}
@@ -327,12 +322,12 @@ export function AppSidebar({
               {activeTab === "account" && "Account & Settings"}
             </h2>
             {activeTab === "notifications" && unreadNotifications > 0 && (
-              <span className="rounded-full bg-flame/15 px-1.5 py-0.5 text-[10.5px] font-bold text-flame">
+              <span className="rounded-full bg-flame/15 px-1.5 py-0.5 text-xs font-bold text-flame">
                 {unreadNotifications}
               </span>
             )}
           </div>
-          <p className="truncate text-[11px] text-body">
+          <p className="truncate text-xs text-body">
             {activeTab === "dashboard" && "Real-time summary"}
             {activeTab === "tests" && "All competitive exam series"}
             {activeTab === "questions" && "Bilingual question bank"}
@@ -405,7 +400,7 @@ export function AppSidebar({
             </Link>
 
             <div className="mt-4 rounded-xl border border-black/8 bg-sand/40 p-3">
-              <p className="text-[11px] font-bold text-forest uppercase tracking-wider">Quick Navigation</p>
+              <p className="text-xs font-bold text-forest uppercase tracking-wider">Quick Navigation</p>
               <p className="mt-1 text-xs text-body leading-relaxed">
                 Click any section icon on the left rail to manage mock tests, question bank, job guides, or customize account appearance.
               </p>
@@ -415,7 +410,7 @@ export function AppSidebar({
 
         {activeTab === "tests" && (
           <div className="space-y-1">
-            <p className="px-2 pb-1 text-[10.5px] font-bold tracking-wider text-body/70 uppercase">
+            <p className="px-2 pb-1 text-xs font-bold tracking-wider text-body/70 uppercase">
               Mock Test Series
             </p>
             {[
@@ -447,7 +442,7 @@ export function AppSidebar({
 
         {activeTab === "questions" && (
           <div className="space-y-1">
-            <p className="px-2 pb-1 text-[10.5px] font-bold tracking-wider text-body/70 uppercase">
+            <p className="px-2 pb-1 text-xs font-bold tracking-wider text-body/70 uppercase">
               Question Management
             </p>
             {[
@@ -478,7 +473,7 @@ export function AppSidebar({
 
         {activeTab === "jobs" && (
           <div className="space-y-1">
-            <p className="px-2 pb-1 text-[10.5px] font-bold tracking-wider text-body/70 uppercase">
+            <p className="px-2 pb-1 text-xs font-bold tracking-wider text-body/70 uppercase">
               Job Postings
             </p>
             {[
@@ -508,7 +503,7 @@ export function AppSidebar({
 
         {activeTab === "users" && (
           <div className="space-y-1">
-            <p className="px-2 pb-1 text-[10.5px] font-bold tracking-wider text-body/70 uppercase">
+            <p className="px-2 pb-1 text-xs font-bold tracking-wider text-body/70 uppercase">
               Community & Access
             </p>
             {[
@@ -537,7 +532,7 @@ export function AppSidebar({
 
         {activeTab === "notifications" && (
           <div className="space-y-1">
-            <p className="px-2 pb-1 text-[10.5px] font-bold tracking-wider text-body/70 uppercase">
+            <p className="px-2 pb-1 text-xs font-bold tracking-wider text-body/70 uppercase">
               Alert Feeds
             </p>
             {[
@@ -567,7 +562,7 @@ export function AppSidebar({
         {activeTab === "account" && (
           <div className="space-y-5">
             <div>
-              <p className="px-3 pb-1.5 text-[10.5px] font-bold tracking-wider text-body/70 uppercase">
+              <p className="px-3 pb-1.5 text-xs font-bold tracking-wider text-body/70 uppercase">
                 Account Settings
               </p>
               <div className="space-y-0.5">
@@ -595,7 +590,7 @@ export function AppSidebar({
                         <span className={`block truncate text-xs font-semibold ${active ? "text-forest" : "text-ink"}`}>
                           {section.label}
                         </span>
-                        <span className="block truncate text-[11px] text-body">{section.hint}</span>
+                        <span className="block truncate text-xs text-body">{section.hint}</span>
                       </span>
                     </Link>
                   );
@@ -617,7 +612,7 @@ export function AppSidebar({
             <AdminAvatar name={admin.name} size="sm" />
             <div className="min-w-0 flex-1">
               <p className="truncate text-xs font-bold text-ink">{admin.name}</p>
-              <p className="truncate text-[10.5px] text-body">
+              <p className="truncate text-xs text-body">
                 {admin.role === "SUPER_ADMIN" ? "Super Admin" : "Content Editor"}
               </p>
             </div>
@@ -637,7 +632,7 @@ export function AppSidebar({
   return (
     <Fragment>
       {/* Desktop Sticky Rail + Collapsible Secondary Panel */}
-      <aside className="sticky top-0 z-40 hidden h-screen shrink-0 lg:flex">
+      <aside className="sticky top-0 z-40 hidden h-screen-dvh shrink-0 lg:flex">
         {renderIconRail}
         <div
           className={`relative flex h-full flex-col border-r border-black/8 bg-white/95 backdrop-blur-sm transition-[width,opacity] duration-250 ease-in-out ${panelCollapsed ? "w-0 overflow-hidden border-r-0 opacity-0" : "w-64 opacity-100"

@@ -19,7 +19,7 @@ export function ResultsView() {
   return (
     <main className="mx-auto w-full max-w-4xl flex-1 px-4 py-10">
       <div className="flex items-center justify-between gap-3">
-        <Link href="/#tests" className="inline-flex h-11 items-center gap-2 text-sm font-semibold text-slate-600 hover:text-navy-950">
+        <Link href="/#tests" className="inline-flex h-11 items-center gap-2 text-sm font-semibold text-slate-600 hover:text-ink">
           <ArrowLeft className="size-4" aria-hidden /> All tests
         </Link>
         <LanguageToggle available={test.languages} />

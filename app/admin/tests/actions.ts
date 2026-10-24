@@ -1,20 +1,14 @@
 "use server";
-
-import { randomUUID } from "node:crypto";
-import { updateTag } from "next/cache";
-import { redirect } from "next/navigation";
-import { asLocalized } from "@/lib/i18n";
 import { prisma } from "@/lib/prisma";
+import { updateTag } from "next/cache";
+import { asLocalized } from "@/lib/i18n";
+import { randomUUID } from "node:crypto";
+import { redirect } from "next/navigation";
 import type { Prisma } from "@/lib/generated/prisma/client";
 import { DEFAULT_SECTION, newDraft, parseDraftData, publishProblems, sectionsOf, type DraftData } from "@/lib/import/draft";
 
-// Server Actions for the admin test builder.
-// TODO(auth): /admin has no sign-in yet, so anyone who can reach these can
-// change tests. Add a session/role check at the top of each action once auth exists.
-
 const MAX_QUESTIONS = 500;
 
-/** Validate untrusted editor state and keep it within sane sizes. */
 function clean(input: unknown): DraftData {
   const data = parseDraftData(input);
   if (data.questions.length > MAX_QUESTIONS) throw new Error(`A test can have at most ${MAX_QUESTIONS} questions.`);
@@ -58,7 +52,6 @@ export async function deleteDraft(id: string): Promise<void> {
   redirect("/admin/tests");
 }
 
-/** Open a live test in the builder (reusing its draft if one is already open). */
 export async function editTest(testId: string): Promise<void> {
   const existing = await prisma.testDraft.findUnique({ where: { testId }, select: { id: true } });
   if (existing) redirect(`/admin/tests/drafts/${existing.id}`);
@@ -84,6 +77,9 @@ export async function editTest(testId: string): Promise<void> {
     marksCorrect: test.marksCorrect,
     marksWrong: test.marksWrong,
     featured: test.featured,
+    kind: test.kind,
+    drillSubject: test.drillSubject,
+    difficulty: test.difficulty,
     questions: test.questions.map(({ question, section }) => {
       const en = question.translations[0];
       return {
@@ -117,7 +113,6 @@ function slugify(text: string): string {
 
 type PublishResult = { ok: true; slug: string } | { ok: false; problems: string[] };
 
-/** Validate a draft and write it as a live test (creating it, or updating the test it edits). */
 export async function publishDraft(id: string): Promise<PublishResult> {
   const draft = await prisma.testDraft.findUnique({ where: { id } });
   if (!draft) return { ok: false, problems: ["This draft no longer exists."] };
@@ -128,7 +123,6 @@ export async function publishDraft(id: string): Promise<PublishResult> {
 
   const exam = data.examSlug ? await prisma.exam.findUnique({ where: { slug: data.examSlug }, select: { id: true } }) : null;
 
-  // Section keys must be unique within a test.
   const sectionKeys = new Map<string, string>();
   for (const name of sectionsOf(data)) {
     const base = slugify(name) || "section";
@@ -149,6 +143,9 @@ export async function publishDraft(id: string): Promise<PublishResult> {
         marksCorrect: data.marksCorrect,
         marksWrong: data.marksWrong,
         featured: data.featured,
+        kind: data.kind,
+        drillSubject: data.kind === "DRILL" ? data.drillSubject : null,
+        difficulty: data.kind === "DRILL" ? data.difficulty : null,
         status: "PUBLISHED" as const,
       };
 
@@ -177,10 +174,6 @@ export async function publishDraft(id: string): Promise<PublishResult> {
         data: [...sectionKeys].map(([name, key], position) => ({ id: sectionIds.get(name)!, testId, key, position, name: { en: name } })),
       });
 
-      // Questions that already exist are updated in place (attempt history
-      // points at them); new ones are created in one batch.
-      // One read for all of them, then writes only where something changed,
-      // so re-publishing a large test after a small fix stays fast.
       const current = await tx.question.findMany({
         where: { id: { in: data.questions.flatMap((q) => (q.dbId ? [q.dbId] : [])) } },
         select: { id: true, answerIndex: true, subject: true, translations: { where: { lang: "en" } } },
@@ -204,7 +197,6 @@ export async function publishDraft(id: string): Promise<PublishResult> {
             create: { questionId: ids[i], lang: "en", prompt: q.prompt, options: q.options, explanation: q.explanation, reviewedAt: new Date() },
             update: { prompt: q.prompt, options: q.options, explanation: q.explanation, reviewedAt: new Date() },
           });
-          // Other languages no longer match the edited English; the test falls back to English for this question.
           await tx.questionTranslation.deleteMany({ where: { questionId: ids[i], lang: { not: "en" } } });
         }
       }
@@ -225,7 +217,6 @@ export async function publishDraft(id: string): Promise<PublishResult> {
         data: data.questions.map((q, position) => ({ testId, questionId: ids[position], sectionId: sectionIds.get(sectionOf(q.section))!, position })),
       });
 
-      // Questions dropped from the test: delete if nothing else uses them.
       const dropped = previousQuestionIds.filter((qid) => !ids.includes(qid));
       if (dropped.length) {
         await tx.question.deleteMany({ where: { id: { in: dropped }, tests: { none: {} }, answers: { none: {} } } });
@@ -237,7 +228,6 @@ export async function publishDraft(id: string): Promise<PublishResult> {
     { timeout: 60_000 },
   );
 
-  // Show the change immediately on the site and in admin.
   for (const tag of ["tests", `test:${slug}`, "exams", "jobs"]) updateTag(tag);
   return { ok: true, slug };
 }

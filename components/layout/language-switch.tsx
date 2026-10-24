@@ -10,7 +10,7 @@ export function LanguageSwitch() {
     <div role="radiogroup" aria-label="Language" className="flex rounded-full border border-slate-300 bg-white p-0.5">
       {languages.map((l) => (
         <button key={l.code} type="button" role="radio" aria-checked={lang === l.code} lang={l.code} onClick={() => setLang(l.code)}
-          className={cn("h-10 rounded-full px-3 text-sm font-semibold transition-colors", lang === l.code ? "bg-navy-900 text-white" : "text-slate-600 hover:text-navy-950")}>
+          className={cn("h-10 rounded-full px-3 text-sm font-semibold transition-colors", lang === l.code ? "bg-leaf-800 text-white" : "text-slate-600 hover:text-ink")}>
           {l.code === "en" ? "EN" : l.label}
         </button>
       ))}

@@ -84,23 +84,23 @@ export default function JobsAdminPage() {
 
       <div className="mb-6 grid grid-cols-2 gap-3 sm:grid-cols-4">
         <div className="rounded-2xl border border-black/6 bg-white p-4 shadow-2xs">
-          <p className="text-[11px] font-bold text-body uppercase tracking-wider">Active Alerts</p>
+          <p className="text-xs font-bold text-body uppercase tracking-wider">Active Alerts</p>
           <p className="mt-1 font-display text-2xl font-bold text-ink">{jobs.length}</p>
         </div>
         <div className="rounded-2xl border border-black/6 bg-white p-4 shadow-2xs">
-          <p className="text-[11px] font-bold text-body uppercase tracking-wider">Total Vacancies</p>
+          <p className="text-xs font-bold text-body uppercase tracking-wider">Total Vacancies</p>
           <p className="mt-1 font-display text-2xl font-bold text-forest">
             {totalVacancies.toLocaleString()}
           </p>
         </div>
         <div className="rounded-2xl border border-black/6 bg-white p-4 shadow-2xs">
-          <p className="text-[11px] font-bold text-body uppercase tracking-wider">Verified Guides</p>
+          <p className="text-xs font-bold text-body uppercase tracking-wider">Verified Guides</p>
           <p className="mt-1 font-display text-2xl font-bold text-olive">
             {jobs.filter((j) => j.status === "PUBLISHED").length}
           </p>
         </div>
         <div className="rounded-2xl border border-black/6 bg-white p-4 shadow-2xs">
-          <p className="text-[11px] font-bold text-body uppercase tracking-wider">National Boards</p>
+          <p className="text-xs font-bold text-body uppercase tracking-wider">National Boards</p>
           <p className="mt-1 font-display text-2xl font-bold text-ink">4 Commissions</p>
         </div>
       </div>
@@ -121,7 +121,7 @@ export default function JobsAdminPage() {
           <div key={job.id} className="rounded-2xl border border-black/6 bg-white p-5 shadow-xs transition hover:border-forest/40 flex flex-col justify-between">
             <div>
               <div className="flex items-start justify-between gap-2">
-                <span className="text-[11px] font-bold text-forest uppercase tracking-wider">{job.organization}</span>
+                <span className="text-xs font-bold text-forest uppercase tracking-wider">{job.organization}</span>
                 <Badge tone={job.status === "PUBLISHED" ? "green" : "yellow"}>{job.status}</Badge>
               </div>
               <h3 className="mt-2 font-display text-base font-bold text-ink leading-snug">{job.title}</h3>
@@ -139,7 +139,7 @@ export default function JobsAdminPage() {
 
               <div className="mt-3 flex flex-wrap gap-1.5">
                 {job.eligibleQuals.map((qual) => (
-                  <span key={qual} className="rounded-md border border-black/8 bg-sand/40 px-2 py-0.5 text-[10px] font-medium text-body">
+                  <span key={qual} className="rounded-md border border-black/8 bg-sand/40 px-2 py-0.5 text-xs font-medium text-body">
                     {qual}
                   </span>
                 ))}
@@ -147,7 +147,7 @@ export default function JobsAdminPage() {
             </div>
 
             <div className="mt-5 border-t border-black/5 pt-3 flex items-center justify-between text-xs">
-              <span className="text-body text-[11px]">Direct Official Portal</span>
+              <span className="text-body text-xs">Direct Official Portal</span>
               <a href={job.officialUrl} target="_blank" rel="noreferrer" className="inline-flex items-center gap-1 font-semibold text-forest hover:underline">
                 <span>Visit Commission</span>
                 <ExternalLink className="size-3.5" />

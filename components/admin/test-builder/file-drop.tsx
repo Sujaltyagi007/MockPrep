@@ -1,22 +1,11 @@
 "use client";
-import { useId, useState } from "react";
 import { cn } from "@/lib/utils";
+import { useId, useState } from "react";
 import { FileText, UploadCloud, X } from "lucide-react";
 
 const formatSize = (bytes: number) => (bytes > 1024 * 1024 ? `${(bytes / 1024 / 1024).toFixed(1)} MB` : `${Math.ceil(bytes / 1024)} KB`);
 
-/** Drag-and-drop or click-to-choose for one PDF (or .txt) file. */
-export function FileDrop({
-  label,
-  hint,
-  file,
-  onChange,
-}: {
-  label: string;
-  hint: string;
-  file: File | null;
-  onChange: (file: File | null) => void;
-}) {
+export function FileDrop({ label, hint, file, onChange, }: { label: string; hint: string; file: File | null; onChange: (file: File | null) => void; }) {
   const id = useId();
   const [over, setOver] = useState(false);
 
@@ -40,19 +29,7 @@ export function FileDrop({
   }
 
   return (
-    <label
-      htmlFor={id}
-      onDragOver={(e) => {
-        e.preventDefault();
-        setOver(true);
-      }}
-      onDragLeave={() => setOver(false)}
-      onDrop={(e) => {
-        e.preventDefault();
-        setOver(false);
-        const dropped = e.dataTransfer.files[0];
-        if (dropped) onChange(dropped);
-      }}
+    <label htmlFor={id} onDragOver={(e) => { e.preventDefault(); setOver(true); }} onDragLeave={() => setOver(false)} onDrop={(e) => { e.preventDefault(); setOver(false); const dropped = e.dataTransfer.files[0]; if (dropped) onChange(dropped); }}
       className={cn(
         "flex cursor-pointer flex-col items-center justify-center gap-2 rounded-2xl border-2 border-dashed p-8 text-center transition",
         over ? "border-forest bg-forest-tint/60" : "border-black/15 bg-white hover:border-forest/50 hover:bg-sand/60",
@@ -63,13 +40,7 @@ export function FileDrop({
       <span className="text-sm font-semibold text-ink">{label}</span>
       <span className="text-xs text-body">{hint}</span>
       <span className="mt-1 rounded-lg bg-forest px-3 py-1.5 text-xs font-semibold text-white">Choose file</span>
-      <input
-        id={id}
-        type="file"
-        accept="application/pdf,.pdf,text/plain,.txt"
-        className="sr-only"
-        onChange={(e) => onChange(e.target.files?.[0] ?? null)}
-      />
+      <input id={id} type="file" accept="application/pdf,.pdf,text/plain,.txt" className="sr-only" onChange={(e) => onChange(e.target.files?.[0] ?? null)} />
     </label>
   );
 }
